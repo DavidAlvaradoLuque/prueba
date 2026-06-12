@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title},~{::section})}">
+<head><title>Cargue de Pago</title></head>
+<body><section>
+<div class="ph"><h4><i class="fas fa-file-upload me1" style="color:var(--g3)"></i><span th:if="${'TYT'.equals(tipo)}">Cargue Comprobante Pago TyT</span><span th:if="${'SABER_PRO'.equals(tipo)}">Cargue Comprobante Pago Saber Pro</span></h4></div>
+<div class="form-card" style="max-width:520px">
+  <div style="background:var(--gl);border-radius:10px;padding:12px;margin-bottom:18px;display:flex;align-items:center;gap:12px">
+    <div style="width:42px;height:42px;background:var(--g1);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.1rem;flex-shrink:0"><i class="fas fa-user-graduate"></i></div>
+    <div><div class="fb" th:text="${alumno?.nombreCompleto}"></div><div style="font-size:.78rem;color:var(--muted)">CC: <span th:text="${alumno?.cedula}"></span> — <span th:text="${alumno?.facultad?.nombre}"></span></div></div>
+  </div>
+  <div th:if="${'TYT'.equals(tipo)}" class="a-ok mb3"><i class="fas fa-info-circle"></i><strong> Paso 1:</strong> Carga tu comprobante TyT. Al ser aprobado, podrás acceder a Saber Pro.</div>
+  <div th:if="${'SABER_PRO'.equals(tipo)}" style="background:#e3f2fd;border:1px solid #90caf9;border-radius:10px;padding:11px 14px;margin-bottom:18px;font-size:.83rem;color:#1a4b8b;display:flex;align-items:center;gap:8px"><i class="fas fa-check-circle"></i><strong>Paso 2:</strong> Tienes TyT aprobada. Ahora puedes cargar tu pago Saber Pro.</div>
+
+  <form th:if="${'TYT'.equals(tipo)}" th:action="@{/estudiante/pago-tyt}" method="post">
+    <label class="fl">N° Comprobante de Pago TyT *</label>
+    <input type="text" name="comprobante" class="fc" required th:value="${alumno?.comprobantePagoTyt}" placeholder="TYT-2024-000001"/>
+    <div style="font-size:.73rem;color:var(--muted);margin-top:5px"><i class="fas fa-info-circle me1"></i>Ingresa el número exacto de tu recibo de pago</div>
+    <div class="df g2 mt3"><button type="submit" class="btn-s"><i class="fas fa-save me1"></i>Guardar Comprobante TyT</button><a th:href="@{/estudiante/dashboard}" class="btn-o">Cancelar</a></div>
+  </form>
+  <form th:if="${'SABER_PRO'.equals(tipo)}" th:action="@{/estudiante/pago-saberpro}" method="post">
+    <label class="fl">N° Comprobante de Pago Saber Pro *</label>
+    <input type="text" name="comprobante" class="fc" required th:value="${alumno?.comprobantePagoSaberPro}" placeholder="SP-2024-000001"/>
+    <div style="font-size:.73rem;color:var(--muted);margin-top:5px"><i class="fas fa-info-circle me1"></i>Ingresa el número exacto de tu recibo de pago</div>
+    <div class="df g2 mt3"><button type="submit" class="btn-p"><i class="fas fa-save me1"></i>Guardar Comprobante SP</button><a th:href="@{/estudiante/dashboard}" class="btn-o">Cancelar</a></div>
+  </form>
+</div>
+</section></body></html>

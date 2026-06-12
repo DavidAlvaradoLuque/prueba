@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title},~{::section})}">
+<head><title>Dashboard Coordinador</title></head>
+<body><section>
+<div style="background:linear-gradient(135deg,var(--g1),var(--g3));border-radius:14px;padding:22px 26px;color:#fff;margin-bottom:22px;display:flex;align-items:center;gap:18px;flex-wrap:wrap">
+  <div style="width:54px;height:54px;background:rgba(255,255,255,.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0"><i class="fas fa-user-shield"></i></div>
+  <div style="flex:1">
+    <div style="font-size:.72rem;opacity:.7;text-transform:uppercase;letter-spacing:.06em">Panel del Coordinador</div>
+    <div style="font-size:1.25rem;font-weight:800" th:text="${usuario?.nombre}"></div>
+    <div style="font-size:.82rem;opacity:.8">Gestión de alumnos TyT y Saber Pro</div>
+  </div>
+  <div class="df g2 fw">
+    <div style="background:rgba(255,255,255,.15);border-radius:10px;padding:10px 16px;text-align:center"><div style="font-weight:800;font-size:1.3rem" th:text="${totalAlumnos}">0</div><div style="font-size:.7rem;opacity:.75">Total</div></div>
+    <div style="background:rgba(255,255,255,.15);border-radius:10px;padding:10px 16px;text-align:center"><div style="font-weight:800;font-size:1.3rem" th:text="${totalTyt}">0</div><div style="font-size:.7rem;opacity:.75">Con TyT</div></div>
+    <div style="background:rgba(255,255,255,.15);border-radius:10px;padding:10px 16px;text-align:center"><div style="font-weight:800;font-size:1.3rem" th:text="${totalSaberPro}">0</div><div style="font-size:.7rem;opacity:.75">Saber Pro</div></div>
+    <div style="background:rgba(255,255,255,.15);border-radius:10px;padding:10px 16px;text-align:center"><div style="font-weight:800;font-size:1.3rem" th:text="${totalSinTyt}">0</div><div style="font-size:.7rem;opacity:.75">Sin TyT</div></div>
+  </div>
+</div>
+<div class="row mb4">
+  <div class="c3"><div class="stat-card c-g1 df jcb aic"><div><div class="stat-num" th:text="${totalAlumnos}">0</div><div class="stat-lbl">Total Estudiantes</div></div><div class="stat-ico"><i class="fas fa-users"></i></div></div></div>
+  <div class="c3"><div class="stat-card c-teal df jcb aic"><div><div class="stat-num" th:text="${totalTyt}">0</div><div class="stat-lbl">Aprobados TyT</div></div><div class="stat-ico"><i class="fas fa-check-circle"></i></div></div></div>
+  <div class="c3"><div class="stat-card c-blue df jcb aic"><div><div class="stat-num" th:text="${totalSaberPro}">0</div><div class="stat-lbl">Aprobados Saber Pro</div></div><div class="stat-ico"><i class="fas fa-graduation-cap"></i></div></div></div>
+  <div class="c3"><div class="stat-card c-orange df jcb aic"><div><div class="stat-num" th:text="${totalSinTyt}">0</div><div class="stat-lbl">Sin TyT (bloqueados)</div></div><div class="stat-ico"><i class="fas fa-lock"></i></div></div></div>
+</div>
+<div class="row">
+  <div class="c6"><div class="data-card"><div class="card-header"><i class="fas fa-bolt me1"></i>Acciones Rápidas</div><div class="p3 row">
+    <div class="c6 mb2"><a th:href="@{/coordinador/alumnos}" class="btn-p w100"><i class="fas fa-users me1"></i>Gestión Alumnos</a></div>
+    <div class="c6 mb2"><a th:href="@{/coordinador/alumnos/nuevo}" class="btn-p w100"><i class="fas fa-user-plus me1"></i>Nuevo Alumno</a></div>
+    <div class="c6 mb2"><a th:href="@{/coordinador/informe-total}" class="btn-o w100"><i class="fas fa-list me1"></i>Informe Total</a></div>
+    <div class="c6 mb2"><a th:href="@{/coordinador/informe-unico}" class="btn-o w100"><i class="fas fa-file-lines me1"></i>Informe Único</a></div>
+    <div class="c6 mb2"><a th:href="@{/coordinador/beneficios}" class="btn-o w100"><i class="fas fa-trophy me1"></i>Beneficios</a></div>
+    <div class="c6 mb2"><a th:href="@{/resultados/nuevo}" class="btn-s w100"><i class="fas fa-plus me1"></i>Nuevo Resultado</a></div>
+  </div></div></div>
+  <div class="c6"><div class="data-card"><div class="card-header"><i class="fas fa-route me1"></i>Regla TyT → Saber Pro</div><div class="p3">
+    <div style="background:var(--gl);border-radius:10px;padding:14px;margin-bottom:12px">
+      <div style="font-weight:700;color:var(--g1);margin-bottom:6px"><i class="fas fa-info-circle me1"></i>Requisito obligatorio</div>
+      <div style="font-size:.82rem;color:var(--muted);line-height:1.6">Un estudiante <strong>debe aprobar primero la prueba TyT</strong> antes de ser habilitado para Saber Pro. El sistema bloquea automáticamente si no cumple este requisito.</div>
+    </div>
+    <div class="df g2" style="justify-content:center">
+      <div style="background:var(--gm);border-radius:8px;padding:10px 14px;text-align:center"><div style="font-weight:800;font-size:1.1rem;color:var(--g1)" th:text="${totalTyt}">0</div><div style="font-size:.7rem;color:var(--muted)">Habilitados TyT</div></div>
+      <div style="font-size:1.5rem;color:var(--g3);display:flex;align-items:center">→</div>
+      <div style="background:var(--gm);border-radius:8px;padding:10px 14px;text-align:center"><div style="font-weight:800;font-size:1.1rem;color:var(--g1)" th:text="${totalSaberPro}">0</div><div style="font-size:.7rem;color:var(--muted)">Habilitados SP</div></div>
+    </div>
+  </div></div></div>
+</div>
+</section></body></html>

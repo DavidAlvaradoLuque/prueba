@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title},~{::section})}">
+<head><title>Resolución Beneficios</title></head>
+<body><section>
+<div class="ph"><h4><i class="fas fa-trophy me1" style="color:var(--g3)"></i>Resolución de Beneficios — Tecnología e Ingeniería</h4><p>Estudiantes con beneficios académicos por resultados Saber Pro destacados</p></div>
+<div style="background:linear-gradient(135deg,var(--g1),var(--g3));border-radius:14px;padding:22px;color:#fff;margin-bottom:20px">
+  <h5 style="font-weight:800;font-size:1rem;margin-bottom:10px"><i class="fas fa-gavel me1"></i>Tabla de Beneficios — UTS</h5>
+  <div class="row g2">
+    <div class="c3"><div style="background:rgba(255,255,255,.15);border-radius:10px;padding:12px"><div style="font-weight:800">≥ 180 puntos — Superior</div><div style="font-size:.78rem;margin-top:6px;opacity:.9">✔ Exoneración Trabajo Grado (5.0)<br>✔ Beca 100% Derechos de Grado</div></div></div>
+    <div class="c3"><div style="background:rgba(255,255,255,.15);border-radius:10px;padding:12px"><div style="font-weight:800">170–179 — Alto Superior</div><div style="font-size:.78rem;margin-top:6px;opacity:.9">✔ Exoneración Trabajo Grado (5.0)<br>✔ Beca 50% Derechos de Grado</div></div></div>
+    <div class="c3"><div style="background:rgba(255,255,255,.15);border-radius:10px;padding:12px"><div style="font-weight:800">160–169 — Alto</div><div style="font-size:.78rem;margin-top:6px;opacity:.9">✔ Exoneración Trabajo Grado (4.5)<br>✗ Sin beca de derechos</div></div></div>
+    <div class="c3"><div style="background:rgba(255,255,255,.15);border-radius:10px;padding:12px"><div style="font-weight:800">&lt; 160 — Sin beneficio</div><div style="font-size:.78rem;margin-top:6px;opacity:.9">✗ Sin exoneración<br>✗ Sin beca</div></div></div>
+  </div>
+</div>
+<div class="form-card mb3">
+  <form method="get" class="df g2 fw">
+    <select name="facultadId" class="fs" style="max-width:340px">
+      <option value="">-- Todas las facultades --</option>
+      <option th:each="f:${facultades}" th:value="${f.id}" th:text="${f.nombre}" th:selected="${facultadId != null and facultadId == f.id}"></option>
+    </select>
+    <button type="submit" class="btn-p"><i class="fas fa-filter me1"></i>Filtrar</button>
+    <a href="" class="btn-o">Ver Todos</a>
+  </form>
+</div>
+<div class="data-card">
+  <div class="card-header"><i class="fas fa-award me1"></i>Beneficiados Saber Pro <span class="b-tyt" th:text="${#lists.size(resultados) + ' estudiantes'}"></span></div>
+  <div class="p0"><table class="table">
+    <thead><tr><th>#</th><th>Estudiante</th><th>Cédula</th><th>Facultad</th><th>Programa SP</th><th>Puntaje</th><th>Nivel</th><th>Beneficio</th></tr></thead>
+    <tbody>
+      <tr th:each="r,i:${resultados}">
+        <td th:text="${i.count}"></td>
+        <td><div class="fb" th:text="${r.alumno?.nombreCompleto}"></div></td>
+        <td th:text="${r.alumno?.cedula}"></td>
+        <td style="font-size:.78rem" th:text="${r.alumno?.facultad?.nombre}"></td>
+        <td style="font-size:.75rem" th:text="${r.alumno?.programaSaberPro ?: '—'}"></td>
+        <td><strong style="font-size:1.05rem" th:text="${r.puntajeGlobal}"></strong></td>
+        <td><span th:text="${r.nivel}" th:classappend="${'Superior'.equals(r.nivel)?'lv-s':('Alto'.equals(r.nivel)?'lv-a':'lv-m')}"></span></td>
+        <td style="font-size:.78rem;max-width:200px" th:text="${r.descripcionBeneficio}"></td>
+      </tr>
+      <tr th:if="${#lists.isEmpty(resultados)}"><td colspan="8" class="tc tm" style="padding:24px">Sin beneficiados registrados</td></tr>
+    </tbody>
+  </table></div>
+</div>
+</section></body></html>

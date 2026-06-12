@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title},~{::section})}">
+<head><title>Facultad</title></head>
+<body><section>
+<div class="ph"><h4><i class="fas fa-building-columns me1" style="color:var(--g3)"></i>
+  <span th:text="${facultad.id != null ? 'Editar Facultad' : 'Nueva Facultad'}"></span>
+</h4></div>
+<div class="form-card" style="max-width:560px">
+  <div class="a-wa mb3"><i class="fas fa-info-circle me1"></i>UTS solo tiene 2 facultades: <strong>FCSE</strong> y <strong>FCNI</strong>. No crear más.</div>
+  <form th:action="${facultad.id != null ? '/admin/facultades/actualizar/' + facultad.id : '/admin/facultades/guardar'}"
+        th:object="${facultad}" method="post">
+    <input type="hidden" th:field="*{id}"/>
+    <div class="row">
+      <div class="c8 mb3"><label class="fl">Nombre *</label><input type="text" class="fc" th:field="*{nombre}" required placeholder="Nombre completo de la facultad"/></div>
+      <div class="c4 mb3"><label class="fl">Código *</label>
+        <select class="fs" th:field="*{codigo}" required>
+          <option value="">-- Seleccionar --</option>
+          <option th:each="c:${codigos}" th:value="${c}" th:text="${c}"></option>
+        </select>
+      </div>
+      <div class="c12 mb3"><label class="fl">Descripción</label><textarea class="fc" th:field="*{descripcion}" rows="3" placeholder="Breve descripción de los programas"></textarea></div>
+    </div>
+    <div class="df g2 mt3">
+      <button type="submit" class="btn-p"><i class="fas fa-save me1"></i>Guardar</button>
+      <a th:href="@{/admin/facultades}" class="btn-o">Cancelar</a>
+    </div>
+  </form>
+</div>
+</section></body></html>

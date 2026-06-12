@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title},~{::section})}">
+<head><title>Gestión de Directores</title></head>
+<body><section>
+<div class="ph df jcb aic fw g2 mb3">
+  <div><h4><i class="fas fa-user-tie me1" style="color:var(--g3)"></i>Gestión de Directores</h4></div>
+  <a th:href="@{/admin/directores/nuevo}" class="btn-p"><i class="fas fa-plus me1"></i>Nuevo</a>
+</div>
+<div class="data-card">
+  <div class="card-header"><i class="fas fa-list me1"></i>Listado</div>
+  <div class="p0">
+    <table class="table">
+      <thead><tr><th>Nombre</th><th>Cédula</th><th>Email</th><th>Teléfono</th><th>Facultad</th><th>Acciones</th></tr></thead>
+      <tbody>
+        <tr th:each="d : ${directores}">
+          <td class="fb" th:text="${d.nombreCompleto}"></td>
+          <td th:text="${d.cedula}"></td>
+          <td style="font-size:.78rem" th:text="${d.email ?: '—'}"></td>
+          <td th:text="${d.telefono ?: '—'}"></td>
+          <td><span class="b-tyt" th:text="${d.facultad?.nombre ?: '—'}"></span></td>
+          <td>
+            <div class="df g2">
+              <a th:href="@{/admin/directores/editar/{id}(id=${d.id})}" class="btn-o"><i class="fas fa-edit"></i></a>
+              <a th:href="@{/admin/directores/eliminar/{id}(id=${d.id})}" class="btn-d" onclick="return confirm('¿Eliminar?')"><i class="fas fa-trash"></i></a>
+            </div>
+          </td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(directores)}"><td colspan="6" class="tc tm" style="padding:24px">Sin registros</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</section></body></html>

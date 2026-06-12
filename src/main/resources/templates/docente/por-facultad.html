@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title},~{::section})}">
+<head><title>Por Facultad</title></head>
+<body><section>
+<div class="ph"><h4><i class="fas fa-building me1" style="color:var(--g3)"></i>Vista Docente — Por Facultad</h4><p>Filtra por FCSE o FCNI y tipo de examen</p></div>
+<div class="form-card mb3">
+  <form th:action="@{/docente/por-facultad}" method="get" class="df g2 fw">
+    <select name="facultadId" class="fs" style="max-width:340px">
+      <option value="">-- Seleccionar Facultad --</option>
+      <option th:each="f:${facultades}" th:value="${f.id}" th:text="${f.nombre}" th:selected="${facultadId != null and facultadId == f.id}"></option>
+    </select>
+    <select name="tipo" class="fs" style="max-width:180px">
+      <option value="">-- Todos los tipos --</option>
+      <option th:each="t:${tiposExamen}" th:value="${t}" th:text="${t.name() == 'TYT' ? 'TyT' : 'Saber Pro'}" th:selected="${tipo != null and tipo == t.name()}"></option>
+    </select>
+    <button type="submit" class="btn-p"><i class="fas fa-search me1"></i>Consultar</button>
+    <a th:href="@{/docente/por-facultad}" class="btn-o">Limpiar</a>
+  </form>
+</div>
+<div th:if="${facultadSel != null}">
+  <div class="row mb3">
+    <div class="c3"><div class="stat-card c-g1" style="padding:13px"><div class="stat-num" style="font-size:1.4rem" th:text="${#lists.size(alumnos)}">0</div><div class="stat-lbl">Alumnos en <span th:text="${facultadSel.codigo}"></span></div></div></div>
+    <div class="c3"><div class="stat-card c-teal" style="padding:13px"><div class="stat-num" style="font-size:1.4rem" th:text="${totalTyt}">0</div><div class="stat-lbl">Resultados TyT</div></div></div>
+    <div class="c3"><div class="stat-card c-blue" style="padding:13px"><div class="stat-num" style="font-size:1.4rem" th:text="${totalSp}">0</div><div class="stat-lbl">Resultados Saber Pro</div></div></div>
+  </div>
+  <div class="data-card mb3">
+    <div class="card-header"><i class="fas fa-users me1"></i>Alumnos — <span th:text="${facultadSel.nombre}"></span></div>
+    <div class="p0"><table class="table">
+      <thead><tr><th>Nombre</th><th>Cédula</th><th>Prog. TyT</th><th>Prog. SP</th><th>TyT</th><th>Saber Pro</th></tr></thead>
+      <tbody>
+        <tr th:each="a:${alumnos}">
+          <td class="fb" th:text="${a.nombreCompleto}"></td>
+          <td th:text="${a.cedula}"></td>
+          <td style="font-size:.75rem" th:text="${a.programaTyt ?: '—'}"></td>
+          <td style="font-size:.75rem" th:text="${a.programaSaberPro ?: '—'}"></td>
+          <td><span th:if="${a.aprobadoTyt}" class="b-ap">Sí</span><span th:unless="${a.aprobadoTyt}" class="b-pe">No</span></td>
+          <td>
+            <span th:if="${a.aprobadoSaberPro}" class="b-ap">Sí</span>
+            <span th:if="${!a.aprobadoSaberPro and a.aprobadoTyt}" class="b-pe">Habilitado</span>
+            <span th:if="${!a.aprobadoSaberPro and !a.aprobadoTyt}" class="b-bl"><i class="fas fa-lock me1"></i>Bloqueado</span>
+          </td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(alumnos)}"><td colspan="6" class="tc tm" style="padding:20px">Sin alumnos</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+  <div class="data-card" th:if="${resultados != null}">
+    <div class="card-header"><i class="fas fa-file-alt me1"></i>Resultados de la Facultad</div>
+    <div class="p0"><table class="table">
+      <thead><tr><th>Estudiante</th><th>Tipo</th><th>Periodo</th><th>Global</th><th>Lectura</th><th>Razonamiento</th><th>Ciudadanas</th><th>Inglés</th><th>Nivel</th><th>Beneficio</th></tr></thead>
+      <tbody>
+        <tr th:each="r:${resultados}">
+          <td><div class="fb" th:text="${r.alumno?.nombreCompleto}"></div><div style="font-size:.73rem;color:var(--muted)" th:text="${r.alumno?.cedula}"></div></td>
+          <td><span th:if="${'TYT'.equals(r.tipoExamen?.name())}" class="b-tyt">TyT</span><span th:if="${'SABER_PRO'.equals(r.tipoExamen?.name())}" class="b-sp">SP</span></td>
+          <td th:text="${r.periodo ?: '—'}"></td>
+          <td><strong th:text="${r.puntajeGlobal}"></strong></td>
+          <td th:text="${r.lecturaEscritura ?: '—'}"></td>
+          <td th:text="${r.razonamientoCuantitativo ?: '—'}"></td>
+          <td th:text="${r.competenciasCiudadanas ?: '—'}"></td>
+          <td th:text="${r.ingles ?: '—'}"></td>
+          <td><span th:text="${r.nivel}" th:classappend="${'Superior'.equals(r.nivel)?'lv-s':('Alto'.equals(r.nivel)?'lv-a':('Medio'.equals(r.nivel)?'lv-m':'lv-b'))}"></span></td>
+          <td style="font-size:.73rem" th:text="${r.descripcionBeneficio}"></td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(resultados)}"><td colspan="10" class="tc tm" style="padding:20px">Sin resultados</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</div>
+<div th:if="${facultadId == null}" class="a-wa"><i class="fas fa-info-circle"></i> Selecciona una facultad para ver los resultados.</div>
+</section></body></html>

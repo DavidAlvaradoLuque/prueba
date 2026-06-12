@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title},~{::section})}">
+<head><title>Portal Estudiante</title></head>
+<body><section>
+<div th:if="${alumno == null}" class="a-er"><i class="fas fa-exclamation-triangle"></i> No se encontró tu perfil. Contacta al coordinador.</div>
+<div th:if="${alumno != null}">
+<div style="background:linear-gradient(135deg,var(--g1),var(--g3));border-radius:14px;padding:22px 26px;color:#fff;margin-bottom:22px;display:flex;align-items:center;gap:18px;flex-wrap:wrap">
+  <div style="width:56px;height:56px;background:rgba(255,255,255,.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0"><i class="fas fa-user-graduate"></i></div>
+  <div style="flex:1">
+    <div style="font-size:.72rem;opacity:.7;text-transform:uppercase">Portal del Estudiante</div>
+    <div style="font-size:1.25rem;font-weight:800" th:text="${alumno.nombreCompleto}"></div>
+    <div style="font-size:.82rem;opacity:.8">CC: <span th:text="${alumno.cedula}"></span> &nbsp;·&nbsp; Semestre <span th:text="${alumno.semestre ?: '—'}"></span></div>
+  </div>
+  <div class="df g2 fw">
+    <div style="background:rgba(255,255,255,.15);border-radius:10px;padding:10px 14px;text-align:center">
+      <div style="font-size:.67rem;opacity:.7;text-transform:uppercase;margin-bottom:4px">TyT</div>
+      <div th:if="${alumno.aprobadoTyt}" style="font-weight:800;color:#a8ffb8"><i class="fas fa-check-circle me1"></i>Aprobada</div>
+      <div th:unless="${alumno.aprobadoTyt}" style="font-weight:800;color:#ffd89b"><i class="fas fa-clock me1"></i>Pendiente</div>
+    </div>
+    <div style="background:rgba(255,255,255,.15);border-radius:10px;padding:10px 14px;text-align:center">
+      <div style="font-size:.67rem;opacity:.7;text-transform:uppercase;margin-bottom:4px">Saber Pro</div>
+      <div th:if="${alumno.aprobadoSaberPro}" style="font-weight:800;color:#a8ffb8"><i class="fas fa-graduation-cap me1"></i>Aprobada</div>
+      <div th:if="${!alumno.aprobadoSaberPro and alumno.aprobadoTyt}" style="font-weight:800;color:#ffd89b"><i class="fas fa-unlock me1"></i>Habilitado</div>
+      <div th:if="${!alumno.aprobadoSaberPro and !alumno.aprobadoTyt}" style="font-weight:800;color:#ffaaaa"><i class="fas fa-lock me1"></i>Bloqueado</div>
+    </div>
+  </div>
+</div>
+
+<div th:unless="${alumno.aprobadoTyt}" class="a-wa mb3"><i class="fas fa-route me1"></i><strong>TyT Requerida:</strong> Debes aprobar TyT antes de acceder a Saber Pro. Carga tu comprobante de pago para iniciar el proceso.</div>
+
+<!-- PROGRAMAS -->
+<div class="row mb3">
+  <div class="c6"><div class="data-card p3"><div style="font-size:.72rem;color:var(--muted);font-weight:700;text-transform:uppercase;margin-bottom:4px"><i class="fas fa-book me1"></i>Programa TyT</div><div class="fb" th:text="${alumno.programaTyt ?: '—'}"></div></div></div>
+  <div class="c6"><div class="data-card p3"><div style="font-size:.72rem;color:var(--muted);font-weight:700;text-transform:uppercase;margin-bottom:4px"><i class="fas fa-graduation-cap me1"></i>Programa Saber Pro</div><div class="fb" th:text="${alumno.programaSaberPro ?: '—'}"></div></div></div>
+</div>
+
+<!-- OPCIONES -->
+<div class="row mb3">
+  <div class="c3"><a th:href="@{/estudiante/pago-tyt}" style="text-decoration:none;display:block">
+    <div class="data-card p3 tc" style="transition:.15s;cursor:pointer" onmouseover="this.style.borderColor='var(--g1)'" onmouseout="this.style.borderColor='var(--gm)'">
+      <div style="font-size:1.8rem;color:var(--g1);margin-bottom:8px"><i class="fas fa-file-upload"></i></div>
+      <div style="font-weight:700;font-size:.88rem;color:var(--g1)">Cargue Pago TyT</div>
+      <div style="font-size:.72rem;color:var(--muted);margin-top:3px">Sube tu comprobante</div>
+      <div th:if="${alumno.comprobantePagoTyt}" style="margin-top:6px"><span class="b-ap" style="font-size:.68rem"><i class="fas fa-check me1"></i>Registrado</span></div>
+    </div></a></div>
+  <div class="c3">
+    <div th:unless="${alumno.aprobadoTyt}" class="data-card p3 tc" style="opacity:.5;cursor:not-allowed">
+      <div style="font-size:1.8rem;color:#aaa;margin-bottom:8px"><i class="fas fa-lock"></i></div>
+      <div style="font-weight:700;font-size:.88rem;color:#aaa">Cargue Pago SP</div>
+      <div style="font-size:.72rem;color:#bbb;margin-top:3px">Requiere TyT aprobada</div>
+    </div>
+    <a th:if="${alumno.aprobadoTyt}" th:href="@{/estudiante/pago-saberpro}" style="text-decoration:none;display:block">
+    <div class="data-card p3 tc" style="transition:.15s;cursor:pointer" onmouseover="this.style.borderColor='var(--g1)'" onmouseout="this.style.borderColor='var(--gm)'">
+      <div style="font-size:1.8rem;color:var(--g1);margin-bottom:8px"><i class="fas fa-file-upload"></i></div>
+      <div style="font-weight:700;font-size:.88rem;color:var(--g1)">Cargue Pago SP</div>
+      <div style="font-size:.72rem;color:var(--muted);margin-top:3px">Saber Pro</div>
+      <div th:if="${alumno.comprobantePagoSaberPro}" style="margin-top:6px"><span class="b-ap" style="font-size:.68rem"><i class="fas fa-check me1"></i>Registrado</span></div>
+    </div></a>
+  </div>
+  <div class="c3"><a th:href="@{/estudiante/resultado-unico}" style="text-decoration:none;display:block">
+    <div class="data-card p3 tc" style="transition:.15s;cursor:pointer" onmouseover="this.style.borderColor='var(--g1)'" onmouseout="this.style.borderColor='var(--gm)'">
+      <div style="font-size:1.8rem;color:var(--g1);margin-bottom:8px"><i class="fas fa-star"></i></div>
+      <div style="font-weight:700;font-size:.88rem;color:var(--g1)">Último Resultado</div>
+      <div style="font-size:.72rem;color:var(--muted);margin-top:3px">TyT y Saber Pro</div>
+    </div></a></div>
+  <div class="c3"><a th:href="@{/estudiante/resultados-total}" style="text-decoration:none;display:block">
+    <div class="data-card p3 tc" style="transition:.15s;cursor:pointer" onmouseover="this.style.borderColor='var(--g1)'" onmouseout="this.style.borderColor='var(--gm)'">
+      <div style="font-size:1.8rem;color:var(--g1);margin-bottom:8px"><i class="fas fa-chart-line"></i></div>
+      <div style="font-weight:700;font-size:.88rem;color:var(--g1)">Todos mis Resultados</div>
+      <div style="font-size:.72rem;color:var(--muted);margin-top:3px">Historial completo</div>
+    </div></a></div>
+</div>
+
+<!-- RESUMEN RESULTADOS -->
+<div class="row">
+  <div class="c6"><div class="data-card">
+    <div class="card-header" style="background:var(--gl)"><i class="fas fa-file-alt me1" style="color:var(--g1)"></i>Último Resultado TyT</div>
+    <div class="p3" th:if="${ultimoTyt != null}" style="text-align:center">
+      <div style="font-size:2.5rem;font-weight:800;color:var(--g1)" th:text="${ultimoTyt.puntajeGlobal}"></div>
+      <span th:text="${ultimoTyt.nivel}" th:classappend="${'Superior'.equals(ultimoTyt.nivel)?'lv-s':('Alto'.equals(ultimoTyt.nivel)?'lv-a':('Medio'.equals(ultimoTyt.nivel)?'lv-m':'lv-b'))}"></span>
+      <div style="font-size:.78rem;color:var(--muted);margin-top:6px" th:text="${'Periodo: ' + (ultimoTyt.periodo ?: '—')}"></div>
+    </div>
+    <div class="p3 tc tm" th:unless="${ultimoTyt != null}">Sin resultado TyT registrado</div>
+  </div></div>
+  <div class="c6"><div class="data-card">
+    <div class="card-header" style="background:#e3f2fd"><i class="fas fa-graduation-cap me1" style="color:#1a4b8b"></i>Último Resultado Saber Pro</div>
+    <div class="p3" th:if="${ultimoSaberPro != null}" style="text-align:center">
+      <div style="font-size:2.5rem;font-weight:800;color:#1a4b8b" th:text="${ultimoSaberPro.puntajeGlobal}"></div>
+      <span th:text="${ultimoSaberPro.nivel}" th:classappend="${'Superior'.equals(ultimoSaberPro.nivel)?'lv-s':('Alto'.equals(ultimoSaberPro.nivel)?'lv-a':('Medio'.equals(ultimoSaberPro.nivel)?'lv-m':'lv-b'))}"></span>
+      <div th:if="${ultimoSaberPro.tieneBeneficio()}" style="margin-top:10px;background:var(--gl);border-radius:8px;padding:8px;font-size:.78rem;color:var(--g1)"><i class="fas fa-trophy me1"></i><span th:text="${ultimoSaberPro.descripcionBeneficio}"></span></div>
+    </div>
+    <div class="p3 tc" th:unless="${ultimoSaberPro != null}">
+      <div th:unless="${alumno.aprobadoTyt}" style="color:#b71c1c"><i class="fas fa-lock me1"></i>Bloqueado — Requiere TyT</div>
+      <div th:if="${alumno.aprobadoTyt}" class="tm">Sin resultado Saber Pro aún</div>
+    </div>
+  </div></div>
+</div>
+</div>
+</section></body></html>

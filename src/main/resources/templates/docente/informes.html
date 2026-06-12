@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title},~{::section})}">
+<head><title>Informes</title></head>
+<body><section>
+<div class="ph df jcb aic fw g2 mb3">
+  <div><h4><i class="fas fa-file-alt me1" style="color:var(--g3)"></i><span th:text="${'UNICO'.equals(tipoFiltro) ? 'Informe Único — Último Resultado' : 'Informe Total — Todos los Alumnos'}"></span></h4></div>
+  <div class="df g2">
+    <a th:href="@{/docente/informe-total}" class="btn-p" th:if="${'UNICO'.equals(tipoFiltro)}"><i class="fas fa-list me1"></i>Ver Total</a>
+    <a th:href="@{/docente/informe-unico}" class="btn-p" th:unless="${'UNICO'.equals(tipoFiltro)}"><i class="fas fa-file-lines me1"></i>Ver Único</a>
+    <a th:href="@{/docente/dashboard}" class="btn-o"><i class="fas fa-arrow-left me1"></i>Volver</a>
+  </div>
+</div>
+
+<!-- INFORME TOTAL: tabla de todos los alumnos -->
+<div th:if="${!'UNICO'.equals(tipoFiltro)}" class="data-card">
+  <div class="card-header"><i class="fas fa-users me1"></i>Todos los Alumnos registrados <span class="b-tyt" th:text="${#lists.size(alumnos) + ' alumnos'}"></span></div>
+  <div class="p0">
+    <table class="table">
+      <thead><tr><th>#</th><th>Nombre</th><th>Cédula</th><th>Facultad</th><th>Prog. TyT</th><th>Prog. Saber Pro</th><th>Semestre</th><th>TyT</th><th>Saber Pro</th></tr></thead>
+      <tbody>
+        <tr th:each="a,i : ${alumnos}">
+          <td th:text="${i.count}"></td>
+          <td><div class="fb" th:text="${a.nombreCompleto}"></div><div style="font-size:.73rem;color:var(--muted)" th:text="${a.email}"></div></td>
+          <td th:text="${a.cedula}"></td>
+          <td style="font-size:.78rem" th:text="${a.facultad?.nombre}"></td>
+          <td style="font-size:.75rem" th:text="${a.programaTyt ?: '—'}"></td>
+          <td style="font-size:.75rem" th:text="${a.programaSaberPro ?: '—'}"></td>
+          <td th:text="${a.semestre ?: '—'}"></td>
+          <td><span th:if="${a.aprobadoTyt}" class="b-ap">Sí</span><span th:unless="${a.aprobadoTyt}" class="b-pe">No</span></td>
+          <td>
+            <span th:if="${a.aprobadoSaberPro}" class="b-ap">Sí</span>
+            <span th:if="${!a.aprobadoSaberPro and a.aprobadoTyt}" class="b-pe">Habilitado</span>
+            <span th:if="${!a.aprobadoSaberPro and !a.aprobadoTyt}" class="b-bl"><i class="fas fa-lock me1"></i>Bloqueado</span>
+          </td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(alumnos)}"><td colspan="9" class="tc tm" style="padding:24px">Sin alumnos</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- INFORME ÚNICO: último resultado -->
+<div th:if="${'UNICO'.equals(tipoFiltro)}" class="data-card">
+  <div class="card-header"><i class="fas fa-star me1"></i>Último Resultado por Alumno <span class="b-tyt" th:text="${#lists.size(resultados) + ' con resultado'}"></span></div>
+  <div class="p0">
+    <table class="table">
+      <thead><tr><th>#</th><th>Estudiante</th><th>Cédula</th><th>Tipo</th><th>Periodo</th><th>Puntaje Global</th><th>Nivel</th><th>Beneficio</th></tr></thead>
+      <tbody>
+        <tr th:each="r,i : ${resultados}">
+          <td th:text="${i.count}"></td>
+          <td><div class="fb" th:text="${r.alumno?.nombreCompleto}"></div><div style="font-size:.73rem;color:var(--muted)" th:text="${r.alumno?.facultad?.nombre}"></div></td>
+          <td th:text="${r.alumno?.cedula}"></td>
+          <td><span th:if="${'TYT'.equals(r.tipoExamen?.name())}" class="b-tyt">TyT</span><span th:if="${'SABER_PRO'.equals(r.tipoExamen?.name())}" class="b-sp">Saber Pro</span></td>
+          <td th:text="${r.periodo ?: '—'}"></td>
+          <td><strong style="font-size:1.05rem" th:text="${r.puntajeGlobal}"></strong></td>
+          <td><span th:text="${r.nivel}" th:classappend="${'Superior'.equals(r.nivel)?'lv-s':('Alto'.equals(r.nivel)?'lv-a':('Medio'.equals(r.nivel)?'lv-m':'lv-b'))}"></span></td>
+          <td style="font-size:.75rem" th:text="${r.descripcionBeneficio}"></td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(resultados)}"><td colspan="8" class="tc tm" style="padding:24px">Sin resultados</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</section></body></html>

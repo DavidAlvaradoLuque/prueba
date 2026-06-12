@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Iniciar Sesión — Saber Pro UTS</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Outfit',sans-serif;min-height:100vh;background:linear-gradient(135deg,#1b5e20 0%,#2e7d32 40%,#1b5e20 100%);display:flex;align-items:center;justify-content:center;padding:20px}
+.wrap{display:flex;width:100%;max-width:920px;border-radius:20px;overflow:hidden;box-shadow:0 28px 64px rgba(0,0,0,.35);min-height:540px}
+.left{flex:1;background:rgba(255,255,255,.07);backdrop-filter:blur(12px);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 32px;color:#fff;border-right:1px solid rgba(255,255,255,.1)}
+.logo-box{width:76px;height:76px;background:#fff;border-radius:18px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.25rem;color:#1b5e20;margin-bottom:18px;letter-spacing:-.5px;box-shadow:0 4px 20px rgba(0,0,0,.2)}
+.left h2{font-size:1.75rem;font-weight:800;margin-bottom:6px}
+.left p{font-size:.86rem;opacity:.72;text-align:center;line-height:1.6;max-width:260px}
+.creds{margin-top:28px;width:100%}
+.cred-block{background:rgba(255,255,255,.1);border-radius:12px;padding:13px 16px;margin-bottom:10px;border:1px solid rgba(255,255,255,.12)}
+.cred-block .rol{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;opacity:.6;margin-bottom:6px}
+.cred-block .info{font-size:.8rem;opacity:.85;line-height:1.7}
+.cred-block .info strong{display:inline-block;width:68px;opacity:.7}
+.cred-block .badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.65rem;font-weight:700;margin-left:6px;vertical-align:middle}
+.b-admin{background:#fff;color:#1b5e20} .b-coord{background:#66bb6a;color:#fff} .b-doc{background:#a5d6a7;color:#1b5e20} .b-est{background:#e8f5e9;color:#1b5e20}
+.right{width:380px;background:#fff;display:flex;flex-direction:column;justify-content:center;padding:44px 36px}
+.right h3{font-size:1.3rem;font-weight:800;color:#1b5e20;margin-bottom:4px}
+.right .sub{font-size:.82rem;color:#5a7a5a;margin-bottom:28px;line-height:1.5}
+.fl{font-size:.78rem;font-weight:700;color:#1b5e20;text-transform:uppercase;letter-spacing:.04em;margin-bottom:5px;display:block}
+.fc{border:1.5px solid #c8e6c9;border-radius:10px;padding:11px 14px;font-size:.88rem;font-family:'Outfit',sans-serif;width:100%;transition:.15s;background:#fafff9;color:#1a2e1a}
+.fc:focus{border-color:#1b5e20;outline:none;box-shadow:0 0 0 3px rgba(27,94,32,.1)}
+.mb{margin-bottom:16px}
+.btn-in{width:100%;background:#1b5e20;color:#fff;border:none;padding:13px;border-radius:10px;font-weight:700;font-size:.95rem;cursor:pointer;margin-top:20px;font-family:'Outfit',sans-serif;transition:.15s;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-in:hover{background:#154618}
+.a-er{background:#ffebee;border:1px solid #ffcdd2;color:#b71c1c;padding:11px 14px;border-radius:10px;margin-bottom:16px;font-size:.83rem;display:flex;align-items:center;gap:8px}
+.divider{border:none;border-top:1px solid #e8f5e9;margin:20px 0}
+.hint{font-size:.76rem;color:#5a7a5a;text-align:center;line-height:1.5}
+@media(max-width:640px){.left{display:none}.right{width:100%;border-radius:20px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="left">
+    <div class="logo-box">UTS</div>
+    <h2>Saber Pro</h2>
+    <p>Sistema de Gestión Académica<br>Saber Pro &amp; TyT — UTS</p>
+    <div class="creds">
+      <div class="cred-block">
+        <div class="rol">Administrador <span class="badge b-admin">ADMIN</span></div>
+        <div class="info"><strong>Email:</strong> admin@saberpro.edu.co<br><strong>Clave:</strong> admin123</div>
+      </div>
+      <div class="cred-block">
+        <div class="rol">Coordinador FCSE <span class="badge b-coord">COORD</span></div>
+        <div class="info"><strong>Email:</strong> coordinador1@saberpro.edu.co<br><strong>Clave:</strong> admin123</div>
+      </div>
+      <div class="cred-block">
+        <div class="rol">Coordinador FCNI <span class="badge b-coord">COORD</span></div>
+        <div class="info"><strong>Email:</strong> coordinador2@saberpro.edu.co<br><strong>Clave:</strong> admin123</div>
+      </div>
+      <div class="cred-block">
+        <div class="rol">Docente <span class="badge b-doc">DOCENTE</span></div>
+        <div class="info"><strong>Email:</strong> docente1@saberpro.edu.co<br><strong>Clave:</strong> admin123</div>
+      </div>
+      <div class="cred-block">
+        <div class="rol">Estudiante <span class="badge b-est">ESTUD</span></div>
+        <div class="info"><strong>Email:</strong> estudiante1@saberpro.edu.co<br><strong>Clave:</strong> 1098765432</div>
+      </div>
+    </div>
+  </div>
+  <div class="right">
+    <h3>Iniciar Sesión</h3>
+    <p class="sub">Ingresa tus credenciales para acceder al sistema según tu rol asignado.</p>
+    <div th:if="${error}" class="a-er"><i class="fas fa-times-circle"></i><span th:text="${error}"></span></div>
+    <form th:action="@{/login}" method="post">
+      <div class="mb">
+        <label class="fl">Usuario o Correo</label>
+        <input type="text" name="email" class="fc" placeholder="correo@saberpro.edu.co" required autofocus/>
+      </div>
+      <div class="mb">
+        <label class="fl">Contraseña</label>
+        <input type="password" name="password" class="fc" placeholder="••••••••" required/>
+      </div>
+      <button type="submit" class="btn-in"><i class="fas fa-right-to-bracket"></i> Ingresar al Sistema</button>
+    </form>
+    <hr class="divider"/>
+    <p class="hint"><i class="fas fa-shield-halved" style="color:#1b5e20;margin-right:4px"></i>El sistema redirige automáticamente según tu rol (Admin, Coordinador, Docente o Estudiante)</p>
+  </div>
+</div>
+</body>
+</html>

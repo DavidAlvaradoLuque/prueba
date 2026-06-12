@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title},~{::section})}">
+<head><title>Gestión de Alumnos</title></head>
+<body><section>
+<div class="ph df jcb aic fw g2 mb3">
+  <div><h4><i class="fas fa-users me1" style="color:var(--g3)"></i>Gestión de Alumnos — TyT &amp; Saber Pro</h4>
+  <p>Registro, aprobación y seguimiento de estudiantes</p></div>
+  <a th:href="@{/coordinador/alumnos/nuevo}" class="btn-p"><i class="fas fa-user-plus me1"></i>Nuevo Alumno</a>
+</div>
+
+<div class="row mb3">
+  <div class="c3"><div class="stat-card c-g1" style="padding:14px"><div class="df jcb aic"><div><div class="stat-num" style="font-size:1.6rem" th:text="${totalSinTyt}">0</div><div class="stat-lbl">Sin TyT (bloqueados)</div></div><div class="stat-ico"><i class="fas fa-lock"></i></div></div></div></div>
+  <div class="c3"><div class="stat-card c-teal" style="padding:14px"><div class="df jcb aic"><div><div class="stat-num" style="font-size:1.6rem" th:text="${totalTyt}">0</div><div class="stat-lbl">Aprobados TyT</div></div><div class="stat-ico"><i class="fas fa-check"></i></div></div></div></div>
+  <div class="c3"><div class="stat-card c-blue" style="padding:14px"><div class="df jcb aic"><div><div class="stat-num" style="font-size:1.6rem" th:text="${totalSaberPro}">0</div><div class="stat-lbl">Aprobados Saber Pro</div></div><div class="stat-ico"><i class="fas fa-graduation-cap"></i></div></div></div></div>
+  <div class="c3"><div style="background:var(--gl);border-radius:12px;padding:14px;border:1.5px solid var(--gm);display:flex;align-items:center;gap:10px">
+    <i class="fas fa-route" style="color:var(--g1);font-size:1.4rem"></i>
+    <div style="font-size:.78rem;color:var(--muted);line-height:1.5"><strong style="color:var(--g1)">Regla:</strong> TyT debe aprobarse antes de habilitar Saber Pro</div>
+  </div></div>
+</div>
+
+<div class="data-card">
+  <div class="card-header">
+    <span><i class="fas fa-list me1"></i>Listado de Alumnos</span>
+    <div class="df g2">
+      <a th:href="@{/coordinador/informe-total}" class="btn-o" style="font-size:.75rem;padding:5px 10px"><i class="fas fa-file me1"></i>Informe Total</a>
+      <a th:href="@{/coordinador/informe-unico}" class="btn-o" style="font-size:.75rem;padding:5px 10px"><i class="fas fa-file-lines me1"></i>Informe Único</a>
+    </div>
+  </div>
+  <div class="p0">
+    <table class="table">
+      <thead>
+        <tr><th>Nombre</th><th>Cédula</th><th>Facultad</th><th>Prog. TyT</th><th>Prog. Saber Pro</th><th>TyT</th><th>Saber Pro</th><th>Acciones</th></tr>
+      </thead>
+      <tbody>
+        <tr th:each="a : ${alumnos}">
+          <td><div class="fb" th:text="${a.nombreCompleto}"></div><div style="font-size:.73rem;color:var(--muted)" th:text="${a.email}"></div></td>
+          <td th:text="${a.cedula}"></td>
+          <td style="font-size:.78rem" th:text="${a.facultad?.nombre?.length() > 20 ? a.facultad.nombre.substring(0,20) + '…' : (a.facultad?.nombre ?: '—')}"></td>
+          <td style="font-size:.75rem;max-width:140px" th:text="${a.programaTyt ?: '—'}"></td>
+          <td style="font-size:.75rem;max-width:140px" th:text="${a.programaSaberPro ?: '—'}"></td>
+          <td>
+            <span th:if="${a.aprobadoTyt}" class="b-ap"><i class="fas fa-check me1"></i>Sí</span>
+            <span th:unless="${a.aprobadoTyt}" class="b-pe">No</span>
+          </td>
+          <td>
+            <span th:if="${a.aprobadoSaberPro}" class="b-ap"><i class="fas fa-check me1"></i>Sí</span>
+            <span th:if="${!a.aprobadoSaberPro and a.aprobadoTyt}" class="b-pe">Habilitado</span>
+            <span th:if="${!a.aprobadoSaberPro and !a.aprobadoTyt}" class="b-bl"><i class="fas fa-lock me1"></i>Bloqueado</span>
+          </td>
+          <td>
+            <div class="df g2 fw">
+              <a th:href="@{/coordinador/alumnos/editar/{id}(id=${a.id})}" class="btn-o" title="Editar"><i class="fas fa-edit"></i></a>
+              <a th:unless="${a.aprobadoTyt}" th:href="@{/coordinador/alumnos/aprobar-tyt/{id}(id=${a.id})}"
+                 class="btn-s" title="Aprobar TyT" onclick="return confirm('¿Aprobar TyT?')" style="font-size:.75rem;padding:5px 8px">
+                <i class="fas fa-check"></i> TyT
+              </a>
+              <a th:if="${a.aprobadoTyt and !a.aprobadoSaberPro}"
+                 th:href="@{/coordinador/alumnos/aprobar-saberpro/{id}(id=${a.id})}"
+                 class="btn-p" title="Aprobar Saber Pro" onclick="return confirm('¿Aprobar Saber Pro? (Tiene TyT aprobada)')" style="font-size:.75rem;padding:5px 8px">
+                <i class="fas fa-graduation-cap"></i> SP
+              </a>
+              <a th:href="@{/coordinador/alumnos/eliminar/{id}(id=${a.id})}" class="btn-d"
+                 onclick="return confirm('¿Eliminar alumno?')" title="Eliminar"><i class="fas fa-trash"></i></a>
+            </div>
+          </td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(alumnos)}">
+          <td colspan="8" class="tc tm" style="padding:28px">No hay alumnos registrados</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</section></body></html>
