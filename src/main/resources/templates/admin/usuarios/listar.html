@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title},~{::section})}">
+<head><title>Usuarios</title></head>
+<body><section>
+<div class="ph df jcb aic fw g2 mb4">
+  <div><h4><i class="fas fa-users-cog me1" style="color:var(--g3)"></i>Gestión de Usuarios</h4>
+  <p>Administrar cuentas de acceso al sistema</p></div>
+  <a th:href="@{/admin/usuarios/nuevo}" class="btn-p"><i class="fas fa-plus me1"></i>Nuevo Usuario</a>
+</div>
+
+<div th:if="${msg}" style="background:var(--gl);border:1px solid var(--g4);padding:10px 16px;border-radius:8px;color:var(--g1);margin-bottom:16px" th:text="${msg}"></div>
+
+<div class="data-card">
+  <div class="card-header"><i class="fas fa-list me1"></i>Listado de Usuarios</div>
+  <div class="p3">
+    <table class="table">
+      <thead>
+        <tr><th>#</th><th>Nombre</th><th>Email</th><th>Rol</th><th>Facultad</th><th>Acciones</th></tr>
+      </thead>
+      <tbody>
+        <tr th:each="u : ${usuarios}">
+          <td th:text="${u.id}"></td>
+          <td th:text="${u.nombre}"></td>
+          <td th:text="${u.email}"></td>
+          <td><span class="badge-rol" th:classappend="${#strings.toLowerCase(u.rol.name())}" th:text="${u.rol}"></span></td>
+          <td th:text="${u.facultad != null ? u.facultad.nombre : '—'}"></td>
+          <td class="df g1">
+            <a th:href="@{/admin/usuarios/editar/{id}(id=${u.id})}" class="btn-o"><i class="fas fa-edit"></i></a>
+            <a th:href="@{/admin/usuarios/eliminar/{id}(id=${u.id})}" class="btn-d"
+               onclick="return confirm('¿Eliminar este usuario?')"><i class="fas fa-trash"></i></a>
+          </td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(usuarios)}">
+          <td colspan="6" style="text-align:center;color:var(--muted);padding:24px">No hay usuarios registrados.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</section></body></html>

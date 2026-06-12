@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title},~{::section})}">
+<head><title>Usuario</title></head>
+<body><section>
+<div class="ph df jcb aic fw g2 mb4">
+  <div><h4><i class="fas fa-user-cog me1" style="color:var(--g3)"></i>
+    <span th:text="${usuario.id == null ? 'Nuevo Usuario' : 'Editar Usuario'}"></span></h4></div>
+  <a th:href="@{/admin/usuarios}" class="btn-o"><i class="fas fa-arrow-left me1"></i>Volver</a>
+</div>
+
+<div class="form-card" style="max-width:700px">
+  <form th:action="${usuario.id == null ? '/admin/usuarios/guardar' : '/admin/usuarios/actualizar/' + usuario.id}"
+        th:object="${usuario}" method="post">
+
+    <div class="row">
+      <div class="c6 mb3"><label class="fl">Nombre completo *</label>
+        <input type="text" class="fc" th:field="*{nombre}" required placeholder="Nombre completo"/></div>
+      <div class="c6 mb3"><label class="fl">Email *</label>
+        <input type="email" class="fc" th:field="*{email}" required placeholder="correo@uts.edu.co"/></div>
+      <div class="c6 mb3"><label class="fl">Contraseña *</label>
+        <input type="text" class="fc" th:field="*{password}" required placeholder="Contraseña de acceso"/></div>
+      <div class="c6 mb3"><label class="fl">Rol *</label>
+        <select class="fs" th:field="*{rol}" required>
+          <option value="">-- Seleccionar --</option>
+          <option th:each="r : ${roles}" th:value="${r}" th:text="${r}"></option>
+        </select></div>
+      <div class="c6 mb3"><label class="fl">Facultad</label>
+        <select class="fs" th:field="*{facultad.id}">
+          <option value="">-- Ninguna --</option>
+          <option th:each="f : ${facultades}" th:value="${f.id}" th:text="${f.nombre}"></option>
+        </select></div>
+      <div class="c6 mb3"><label class="fl">Cédula alumno <small style="color:var(--muted)">(solo ESTUDIANTE)</small></label>
+        <input type="text" class="fc" th:field="*{cedulaAlumno}" placeholder="Número de cédula"/></div>
+    </div>
+
+    <div class="df g2 mt2">
+      <button type="submit" class="btn-p"><i class="fas fa-save me1"></i>Guardar</button>
+      <a th:href="@{/admin/usuarios}" class="btn-o">Cancelar</a>
+    </div>
+  </form>
+</div>
+</section></body></html>

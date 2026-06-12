@@ -19,6 +19,7 @@ public class AdminController {
     @Autowired FacultadRepository  facultadRepo;
     @Autowired ResultadoService    resultadoSvc;
     @Autowired AlumnoRepository    alumnoRepo;
+    @Autowired UsuarioRepository   usuarioRepo;
 
     private boolean sinAcceso(HttpSession s) {
         Usuario u = (Usuario) s.getAttribute("usuario");
@@ -175,6 +176,58 @@ public class AdminController {
         facultadRepo.deleteById(id);
         ra.addFlashAttribute("msg", "Facultad eliminada.");
         return "redirect:/admin/facultades";
+    }
+
+    // ══ USUARIOS ═════════════════════════════════════════════════
+    @GetMapping("/usuarios")
+    public String usuarios(Model m, HttpSession s) {
+        if (sinAcceso(s)) return "redirect:/login";
+        m.addAttribute("usuarios", usuarioRepo.findAll());
+        return "admin/usuarios/listar";
+    }
+    @GetMapping("/usuarios/nuevo")
+    public String usuarioNuevo(Model m, HttpSession s) {
+        if (sinAcceso(s)) return "redirect:/login";
+        m.addAttribute("usuario", new Usuario());
+        m.addAttribute("roles", Usuario.Rol.values());
+        m.addAttribute("facultades", facultadRepo.findAll());
+        return "admin/usuarios/formulario";
+    }
+    @PostMapping("/usuarios/guardar")
+    public String usuarioGuardar(@ModelAttribute Usuario u, RedirectAttributes ra, HttpSession s) {
+        if (sinAcceso(s)) return "redirect:/login";
+        if (u.getFacultad() != null && u.getFacultad().getId() != null)
+            facultadRepo.findById(u.getFacultad().getId()).ifPresent(u::setFacultad);
+        else u.setFacultad(null);
+        usuarioRepo.save(u);
+        ra.addFlashAttribute("msg", "Usuario creado correctamente.");
+        return "redirect:/admin/usuarios";
+    }
+    @GetMapping("/usuarios/editar/{id}")
+    public String usuarioEditar(@PathVariable Long id, Model m, HttpSession s) {
+        if (sinAcceso(s)) return "redirect:/login";
+        m.addAttribute("usuario", usuarioRepo.findById(id).orElseThrow());
+        m.addAttribute("roles", Usuario.Rol.values());
+        m.addAttribute("facultades", facultadRepo.findAll());
+        return "admin/usuarios/formulario";
+    }
+    @PostMapping("/usuarios/actualizar/{id}")
+    public String usuarioActualizar(@PathVariable Long id, @ModelAttribute Usuario u, RedirectAttributes ra, HttpSession s) {
+        if (sinAcceso(s)) return "redirect:/login";
+        u.setId(id);
+        if (u.getFacultad() != null && u.getFacultad().getId() != null)
+            facultadRepo.findById(u.getFacultad().getId()).ifPresent(u::setFacultad);
+        else u.setFacultad(null);
+        usuarioRepo.save(u);
+        ra.addFlashAttribute("msg", "Usuario actualizado.");
+        return "redirect:/admin/usuarios";
+    }
+    @GetMapping("/usuarios/eliminar/{id}")
+    public String usuarioEliminar(@PathVariable Long id, RedirectAttributes ra, HttpSession s) {
+        if (sinAcceso(s)) return "redirect:/login";
+        usuarioRepo.deleteById(id);
+        ra.addFlashAttribute("msg", "Usuario eliminado.");
+        return "redirect:/admin/usuarios";
     }
 
     // ══ BENEFICIOS ═══════════════════════════════════════════════
