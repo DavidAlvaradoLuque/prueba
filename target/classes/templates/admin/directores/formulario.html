@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title},~{::section})}">
+<head><title>Director</title></head>
+<body><section>
+<div class="ph"><h4><i class="fas fa-user-tie me1" style="color:var(--g3)"></i>
+  <span th:text="${director.id != null ? 'Editar Director' : 'Nuevo Director'}"></span>
+</h4></div>
+<div class="form-card" style="max-width:640px">
+  <form th:action="${director.id != null ? '/admin/directores/actualizar/' + director.id : '/admin/directores/guardar'}"
+        th:object="${director}" method="post">
+    <input type="hidden" th:field="*{id}"/>
+    <div class="row">
+      <div class="c6 mb3"><label class="fl">Nombre *</label><input type="text" class="fc" th:field="*{nombre}" required minlength="2" maxlength="80" placeholder="Primer nombre"/></div>
+      <div class="c6 mb3"><label class="fl">Apellido *</label><input type="text" class="fc" th:field="*{apellido}" required minlength="2" maxlength="80" placeholder="Apellidos"/></div>
+      <div class="c6 mb3"><label class="fl">Cédula * <small style="color:var(--muted)">(5-12 dígitos)</small></label><input type="text" class="fc" th:field="*{cedula}" required pattern="[0-9]{5,12}" placeholder="Número documento"/></div>
+      <div class="c6 mb3"><label class="fl">Email</label><input type="email" class="fc" th:field="*{email}" placeholder="correo@uts.edu.co"/></div>
+      <div class="c6 mb3"><label class="fl">Teléfono</label><input type="text" class="fc" th:field="*{telefono}" placeholder="300 000 0000"/></div>
+      <div class="c6 mb3"><label class="fl">Facultad</label>
+        <select class="fs" th:field="*{facultad.id}">
+          <option value="">-- Sin asignar --</option>
+          <option th:each="f:${facultades}" th:value="${f.id}" th:text="${f.codigo + ' — ' + f.nombre}"></option>
+        </select>
+      </div>
+    </div>
+    <div class="df g2 mt3">
+      <button type="submit" class="btn-p"><i class="fas fa-save me1"></i>Guardar</button>
+      <a th:href="@{/admin/directores}" class="btn-o">Cancelar</a>
+    </div>
+  </form>
+</div>
+</section></body></html>

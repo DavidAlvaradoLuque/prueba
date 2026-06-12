@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title},~{::section})}">
+<head><title>Alumno</title></head>
+<body><section>
+<div class="ph">
+  <h4><i class="fas fa-user-graduate me1" style="color:var(--g3)"></i>
+    <span th:text="${alumno.id != null ? 'Editar Alumno' : 'Nuevo Alumno'}"></span>
+  </h4>
+  <p>Todos los campos marcados con * son obligatorios. El programa Saber Pro debe ser la continuación directa del programa TyT seleccionado.</p>
+</div>
+
+<div class="form-card" style="max-width:860px">
+  <form th:action="${alumno.id != null ? '/coordinador/alumnos/actualizar/' + alumno.id : '/coordinador/alumnos/guardar'}"
+        th:object="${alumno}" method="post" id="frmAlumno">
+    <input type="hidden" th:field="*{id}"/>
+
+    <!-- DATOS PERSONALES -->
+    <div style="font-size:.8rem;font-weight:700;color:var(--g1);margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid var(--gm);text-transform:uppercase;letter-spacing:.04em"><i class="fas fa-user me1"></i>Datos Personales</div>
+    <div class="row mb3">
+      <div class="c3 mb2">
+        <label class="fl">Nombre *</label>
+        <input type="text" class="fc" th:field="*{nombre}" required minlength="2" maxlength="80" placeholder="Primer nombre"/>
+      </div>
+      <div class="c3 mb2">
+        <label class="fl">Apellido *</label>
+        <input type="text" class="fc" th:field="*{apellido}" required minlength="2" maxlength="80" placeholder="Apellidos completos"/>
+      </div>
+      <div class="c3 mb2">
+        <label class="fl">Cédula * <span style="font-size:.68rem;color:var(--muted)">(5-12 dígitos)</span></label>
+        <input type="text" class="fc" th:field="*{cedula}" required pattern="[0-9]{5,12}" title="Solo dígitos, entre 5 y 12" placeholder="Ej: 1098765432"/>
+      </div>
+      <div class="c3 mb2">
+        <label class="fl">Semestre * <span style="font-size:.68rem;color:var(--muted)">(1–10)</span></label>
+        <input type="number" class="fc" th:field="*{semestre}" required min="1" max="10" placeholder="1 a 10" id="inpSemestre"/>
+      </div>
+      <div class="c4 mb2">
+        <label class="fl">Email</label>
+        <input type="email" class="fc" th:field="*{email}" placeholder="correo@uts.edu.co"/>
+      </div>
+      <div class="c4 mb2">
+        <label class="fl">Teléfono</label>
+        <input type="text" class="fc" th:field="*{telefono}" pattern="[0-9+\- ]{7,15}" title="Ej: 300 000 0000" placeholder="300 000 0000"/>
+      </div>
+      <div class="c4 mb2">
+        <label class="fl">Facultad *</label>
+        <select class="fs" th:field="*{facultad.id}" required id="selFacultad" onchange="actualizarProgramas()">
+          <option value="">-- Seleccionar Facultad --</option>
+          <option th:each="f : ${facultades}" th:value="${f.id}"
+                  th:text="${f.codigo + ' — ' + f.nombre}"
+                  th:attr="data-codigo=${f.codigo}"></option>
+        </select>
+      </div>
+    </div>
+
+    <!-- PROGRAMAS ACADÉMICOS -->
+    <div style="font-size:.8rem;font-weight:700;color:var(--g1);margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid var(--gm);text-transform:uppercase;letter-spacing:.04em"><i class="fas fa-book me1"></i>Programas Académicos</div>
+    <div class="a-wa mb3" id="avisoPrograma">
+      <i class="fas fa-exclamation-triangle me1"></i>
+      <strong>Importante:</strong> El programa Saber Pro debe ser la continuación académica directa del programa TyT elegido. Primero selecciona la facultad y el programa TyT; el Saber Pro se filtrará automáticamente.
+    </div>
+    <div class="row mb3">
+      <div class="c6 mb2">
+        <label class="fl">Programa TyT (Tecnológico) *</label>
+        <select class="fs" th:field="*{programaTyt}" required id="selTyt" onchange="filtrarSaberPro()">
+          <option value="">-- Primero selecciona la facultad --</option>
+          <!-- FCSE TyT -->
+          <optgroup label="── FCSE: Ciencias Socioeconómicas y Empresariales" id="grpFCSE_TYT" style="display:none">
+            <option value="FCSE_TYT_ENTRENAMIENTO">Tecnología en Entrenamiento Deportivo</option>
+            <option value="FCSE_TYT_CONTABLE">Tecnología en Manejo de la Información Contable</option>
+            <option value="FCSE_TYT_MODA">Tecnología en Gestión de la Moda</option>
+            <option value="FCSE_TYT_BANCARIA">Tecnología en Gestión Bancaria y Financiera</option>
+            <option value="FCSE_TYT_MERCADEO">Tecnología en Mercadeo y Gestión Comercial</option>
+            <option value="FCSE_TYT_EMPRESARIAL">Tecnología en Gestión Empresarial</option>
+            <option value="FCSE_TYT_AGROINDUSTRIAL">Tecnología en Gestión Agroindustrial</option>
+          </optgroup>
+          <!-- FCNI TyT -->
+          <optgroup label="── FCNI: Ciencias Naturales e Ingenierías" id="grpFCNI_TYT" style="display:none">
+            <option value="FCNI_TYT_ELECTRONICA">Tecnología en Implementación de Sistemas Electrónicos Industriales</option>
+            <option value="FCNI_TYT_ELECTROMECANICA">Tecnología en Operación y Mantenimiento Electromecánico</option>
+            <option value="FCNI_TYT_TOPOGRAFIA">Tecnología en Levantamientos Topográficos</option>
+            <option value="FCNI_TYT_AMBIENTAL">Tecnología en Manejo de Recursos Ambientales</option>
+            <option value="FCNI_TYT_TELECOMUNICACIONES">Tecnología en Gestión de Sistemas de Telecomunicaciones</option>
+            <option value="FCNI_TYT_SISTEMAS">Tecnología en Desarrollo de Sistemas Informáticos</option>
+            <option value="FCNI_TYT_ENERGIAS">Tecnología en Gestión de Recursos Energéticos</option>
+            <option value="FCNI_TYT_TRANSPORTE">Tecnología en Sistemas de Transporte</option>
+          </optgroup>
+        </select>
+      </div>
+      <div class="c6 mb2">
+        <label class="fl">Programa Saber Pro (Profesional)</label>
+        <select class="fs" th:field="*{programaSaberPro}" id="selSaberPro">
+          <option value="">-- Se filtrará según TyT --</option>
+          <!-- Opciones ocultas — JS las muestra según TyT elegido -->
+          <option value="FCSE_PRO_CULTURA_FISICA"   data-parent="FCSE_TYT_ENTRENAMIENTO"  style="display:none">Profesional en Cultura Física y Deporte</option>
+          <option value="FCSE_PRO_CONTADURIA"        data-parent="FCSE_TYT_CONTABLE"       style="display:none">Contaduría Pública</option>
+          <option value="FCSE_PRO_DISENO_MODAS"      data-parent="FCSE_TYT_MODA"           style="display:none">Profesional en Diseño de Modas</option>
+          <option value="FCSE_PRO_ADMIN_FINANCIERA"  data-parent="FCSE_TYT_BANCARIA"       style="display:none">Administración Financiera</option>
+          <option value="FCSE_PRO_MERCADEO"          data-parent="FCSE_TYT_MERCADEO"       style="display:none">Mercadeo</option>
+          <option value="FCSE_PRO_ADMIN_EMPRESAS"    data-parent="FCSE_TYT_EMPRESARIAL"    style="display:none">Administración de Empresas</option>
+          <option value="FCNI_PRO_ING_ELECTRONICA"       data-parent="FCNI_TYT_ELECTRONICA"       style="display:none">Ingeniería Electrónica</option>
+          <option value="FCNI_PRO_ING_ELECTROMECANICA"   data-parent="FCNI_TYT_ELECTROMECANICA"   style="display:none">Ingeniería Electromecánica</option>
+          <option value="FCNI_PRO_ING_TOPOGRAFIA"        data-parent="FCNI_TYT_TOPOGRAFIA"        style="display:none">Ingeniería en Topografía</option>
+          <option value="FCNI_PRO_ING_AMBIENTAL"         data-parent="FCNI_TYT_AMBIENTAL"         style="display:none">Ingeniería Ambiental</option>
+          <option value="FCNI_PRO_ING_TELECOMUNICACIONES" data-parent="FCNI_TYT_TELECOMUNICACIONES" style="display:none">Ingeniería de Telecomunicaciones</option>
+          <option value="FCNI_PRO_ING_SISTEMAS"          data-parent="FCNI_TYT_SISTEMAS"          style="display:none">Ingeniería de Sistemas</option>
+          <option value="FCNI_PRO_ING_ENERGIAS"          data-parent="FCNI_TYT_ENERGIAS"          style="display:none">Ingeniería en Energías</option>
+          <option value="FCNI_PRO_ING_TRANSPORTE"        data-parent="FCNI_TYT_TRANSPORTE"        style="display:none">Ingeniería en Sistemas de Transporte</option>
+        </select>
+        <div style="font-size:.72rem;color:var(--muted);margin-top:4px" id="infoSp">
+          <i class="fas fa-info-circle me1"></i>Opcional: solo si el alumno ya tiene TyT aprobada y va a cursar el nivel profesional.
+        </div>
+      </div>
+    </div>
+
+    <!-- TABLA DE RUTAS ACADÉMICAS -->
+    <details style="margin-bottom:18px">
+      <summary style="cursor:pointer;font-size:.8rem;font-weight:700;color:var(--g1);padding:8px 12px;background:var(--gl);border-radius:8px;list-style:none">
+        <i class="fas fa-table me1"></i>Ver tabla completa de rutas TyT → Saber Pro
+      </summary>
+      <div style="background:#fff;border:1.5px solid var(--gm);border-radius:0 0 8px 8px;padding:14px;margin-top:2px">
+        <div class="row">
+          <div class="c6">
+            <div style="font-weight:700;color:var(--g1);font-size:.8rem;margin-bottom:8px;text-transform:uppercase">FCSE</div>
+            <table style="width:100%;font-size:.75rem;border-collapse:collapse">
+              <thead><tr style="background:var(--gl)"><th style="padding:6px;text-align:left;color:var(--g1)">TyT</th><th style="padding:6px;text-align:left;color:var(--g1)">→ Saber Pro</th></tr></thead>
+              <tbody>
+                <tr style="border-bottom:1px solid var(--gm)"><td style="padding:5px">Entrenamiento Deportivo</td><td style="padding:5px;color:var(--g1)">Cultura Física y Deporte</td></tr>
+                <tr style="border-bottom:1px solid var(--gm)"><td style="padding:5px">Inf. Contable</td><td style="padding:5px;color:var(--g1)">Contaduría Pública</td></tr>
+                <tr style="border-bottom:1px solid var(--gm)"><td style="padding:5px">Gestión de la Moda</td><td style="padding:5px;color:var(--g1)">Diseño de Modas</td></tr>
+                <tr style="border-bottom:1px solid var(--gm)"><td style="padding:5px">Bancaria y Financiera</td><td style="padding:5px;color:var(--g1)">Administración Financiera</td></tr>
+                <tr style="border-bottom:1px solid var(--gm)"><td style="padding:5px">Mercadeo</td><td style="padding:5px;color:var(--g1)">Mercadeo</td></tr>
+                <tr style="border-bottom:1px solid var(--gm)"><td style="padding:5px">Gestión Empresarial</td><td style="padding:5px;color:var(--g1)">Admón. de Empresas</td></tr>
+                <tr><td style="padding:5px">Gestión Agroindustrial</td><td style="padding:5px;color:#aaa">Sin contraparte profesional</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="c6">
+            <div style="font-weight:700;color:var(--g1);font-size:.8rem;margin-bottom:8px;text-transform:uppercase">FCNI</div>
+            <table style="width:100%;font-size:.75rem;border-collapse:collapse">
+              <thead><tr style="background:var(--gl)"><th style="padding:6px;text-align:left;color:var(--g1)">TyT</th><th style="padding:6px;text-align:left;color:var(--g1)">→ Saber Pro</th></tr></thead>
+              <tbody>
+                <tr style="border-bottom:1px solid var(--gm)"><td style="padding:5px">Sist. Electrónicos Ind.</td><td style="padding:5px;color:var(--g1)">Ing. Electrónica</td></tr>
+                <tr style="border-bottom:1px solid var(--gm)"><td style="padding:5px">Electromecánica</td><td style="padding:5px;color:var(--g1)">Ing. Electromecánica</td></tr>
+                <tr style="border-bottom:1px solid var(--gm)"><td style="padding:5px">Topografía</td><td style="padding:5px;color:var(--g1)">Ing. en Topografía</td></tr>
+                <tr style="border-bottom:1px solid var(--gm)"><td style="padding:5px">Recursos Ambientales</td><td style="padding:5px;color:var(--g1)">Ing. Ambiental</td></tr>
+                <tr style="border-bottom:1px solid var(--gm)"><td style="padding:5px">Telecomunicaciones</td><td style="padding:5px;color:var(--g1)">Ing. de Telecomunicaciones</td></tr>
+                <tr style="border-bottom:1px solid var(--gm)"><td style="padding:5px">Sistemas Informáticos</td><td style="padding:5px;color:var(--g1)">Ing. de Sistemas</td></tr>
+                <tr style="border-bottom:1px solid var(--gm)"><td style="padding:5px">Recursos Energéticos</td><td style="padding:5px;color:var(--g1)">Ing. en Energías</td></tr>
+                <tr><td style="padding:5px">Sistemas de Transporte</td><td style="padding:5px;color:var(--g1)">Ing. en Sist. de Transporte</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <!-- ESTADO DE HABILITACIÓN -->
+    <div style="font-size:.8rem;font-weight:700;color:var(--g1);margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid var(--gm);text-transform:uppercase;letter-spacing:.04em"><i class="fas fa-clipboard-check me1"></i>Estado de Habilitación</div>
+    <div class="row mb3">
+      <div class="c6 mb2">
+        <div style="background:var(--gl);border-radius:10px;padding:14px;border:1.5px solid var(--gm)">
+          <div style="font-weight:700;color:var(--g1);margin-bottom:8px"><i class="fas fa-check-circle me1"></i>TyT</div>
+          <div class="df aic g2 mb2">
+            <input type="checkbox" th:field="*{aprobadoTyt}" id="chkTyt" style="width:18px;height:18px;accent-color:var(--g1)"/>
+            <label for="chkTyt" style="font-size:.84rem">Aprobado para TyT</label>
+          </div>
+          <label class="fl">N° Comprobante Pago TyT</label>
+          <input type="text" class="fc" th:field="*{comprobantePagoTyt}" placeholder="TYT-2024-000001"/>
+          <div style="font-size:.7rem;color:var(--muted);margin-top:4px"><i class="fas fa-info-circle me1"></i>Semestre recomendado: 1 al 6</div>
+        </div>
+      </div>
+      <div class="c6 mb2">
+        <div style="background:#e3f2fd;border-radius:10px;padding:14px;border:1.5px solid #90caf9">
+          <div style="font-weight:700;color:#1a4b8b;margin-bottom:8px"><i class="fas fa-graduation-cap me1"></i>Saber Pro</div>
+          <div class="df aic g2 mb2">
+            <input type="checkbox" th:field="*{aprobadoSaberPro}" id="chkSp" style="width:18px;height:18px;accent-color:#1a4b8b"/>
+            <label for="chkSp" style="font-size:.84rem">Aprobado para Saber Pro</label>
+          </div>
+          <label class="fl">N° Comprobante Pago Saber Pro</label>
+          <input type="text" class="fc" th:field="*{comprobantePagoSaberPro}" placeholder="SP-2024-000001"/>
+          <div style="font-size:.7rem;color:#e65100;margin-top:4px"><i class="fas fa-exclamation-triangle me1"></i>Requiere TyT aprobada + semestre 7–10</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="df g2 mt3">
+      <button type="submit" class="btn-p" id="btnGuardar"><i class="fas fa-save me1"></i>Guardar Alumno</button>
+      <a th:href="@{/coordinador/alumnos}" class="btn-o">Cancelar</a>
+    </div>
+  </form>
+</div>
+
+<script>
+// Mapa de contraparte TyT → Saber Pro
+const contraparte = {
+  'FCSE_TYT_ENTRENAMIENTO':   'FCSE_PRO_CULTURA_FISICA',
+  'FCSE_TYT_CONTABLE':        'FCSE_PRO_CONTADURIA',
+  'FCSE_TYT_MODA':            'FCSE_PRO_DISENO_MODAS',
+  'FCSE_TYT_BANCARIA':        'FCSE_PRO_ADMIN_FINANCIERA',
+  'FCSE_TYT_MERCADEO':        'FCSE_PRO_MERCADEO',
+  'FCSE_TYT_EMPRESARIAL':     'FCSE_PRO_ADMIN_EMPRESAS',
+  'FCSE_TYT_AGROINDUSTRIAL':  null,  // Sin contraparte
+  'FCNI_TYT_ELECTRONICA':        'FCNI_PRO_ING_ELECTRONICA',
+  'FCNI_TYT_ELECTROMECANICA':    'FCNI_PRO_ING_ELECTROMECANICA',
+  'FCNI_TYT_TOPOGRAFIA':         'FCNI_PRO_ING_TOPOGRAFIA',
+  'FCNI_TYT_AMBIENTAL':          'FCNI_PRO_ING_AMBIENTAL',
+  'FCNI_TYT_TELECOMUNICACIONES': 'FCNI_PRO_ING_TELECOMUNICACIONES',
+  'FCNI_TYT_SISTEMAS':           'FCNI_PRO_ING_SISTEMAS',
+  'FCNI_TYT_ENERGIAS':           'FCNI_PRO_ING_ENERGIAS',
+  'FCNI_TYT_TRANSPORTE':         'FCNI_PRO_ING_TRANSPORTE'
+};
+
+function actualizarProgramas() {
+  const selFac = document.getElementById('selFacultad');
+  const opt = selFac.options[selFac.selectedIndex];
+  const codigo = opt ? opt.getAttribute('data-codigo') : '';
+
+  // Mostrar/ocultar grupos TyT
+  document.getElementById('grpFCSE_TYT').style.display = (codigo === 'FCSE') ? '' : 'none';
+  document.getElementById('grpFCNI_TYT').style.display = (codigo === 'FCNI') ? '' : 'none';
+
+  // Reset TyT y SP
+  document.getElementById('selTyt').value = '';
+  document.getElementById('selSaberPro').value = '';
+  filtrarSaberPro();
+}
+
+function filtrarSaberPro() {
+  const tytVal = document.getElementById('selTyt').value;
+  const selSp  = document.getElementById('selSaberPro');
+  const opts   = selSp.querySelectorAll('option[data-parent]');
+
+  opts.forEach(o => { o.style.display = 'none'; o.disabled = true; });
+  selSp.value = '';
+
+  if (!tytVal) {
+    document.getElementById('infoSp').innerHTML = '<i class="fas fa-info-circle me1"></i>Selecciona primero el programa TyT.';
+    return;
+  }
+
+  const sp = contraparte[tytVal];
+  if (!sp) {
+    document.getElementById('infoSp').innerHTML = '<i class="fas fa-exclamation-triangle me1" style="color:#e65100"></i>Este programa TyT no tiene continuación profesional en UTS.';
+    return;
+  }
+
+  // Mostrar SOLO la opción correcta
+  opts.forEach(o => {
+    if (o.getAttribute('data-parent') === tytVal) {
+      o.style.display = '';
+      o.disabled = false;
+      selSp.value = o.value; // auto-seleccionar la única opción
+    }
+  });
+
+  const spOpt = selSp.querySelector(`option[data-parent="${tytVal}"]`);
+  document.getElementById('infoSp').innerHTML = '<i class="fas fa-check-circle me1" style="color:var(--g1)"></i>Continuación correcta: <strong>' + (spOpt ? spOpt.text : '—') + '</strong>';
+}
+
+// Validación antes de submit
+document.getElementById('frmAlumno').addEventListener('submit', function(e) {
+  const sem = parseInt(document.getElementById('inpSemestre').value);
+  const chkSp = document.getElementById('chkSp').checked;
+  const chkTyt = document.getElementById('chkTyt').checked;
+
+  if (chkSp && !chkTyt) {
+    e.preventDefault();
+    alert('⚠ No puedes marcar Saber Pro como aprobado sin tener TyT aprobada.');
+    return;
+  }
+  if (chkSp && sem < 7) {
+    if (!confirm('⚠ El semestre ' + sem + ' parece bajo para Saber Pro (se recomienda semestre 7–10). ¿Deseas continuar?')) {
+      e.preventDefault();
+    }
+  }
+  if (chkTyt && sem > 6) {
+    // Advertencia pero no bloquea (puede presentar TyT en semestres avanzados también)
+  }
+});
+
+// Inicializar si ya hay valores (modo edición)
+window.addEventListener('load', function() {
+  const selFac = document.getElementById('selFacultad');
+  if (selFac.value) actualizarProgramas();
+  const selTyt = document.getElementById('selTyt');
+  if (selTyt.value) filtrarSaberPro();
+});
+</script>
+</section></body></html>

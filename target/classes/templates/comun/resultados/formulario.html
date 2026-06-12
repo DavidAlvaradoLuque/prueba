@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title},~{::section})}">
+<head><title>Resultado</title></head>
+<body><section>
+<div class="ph">
+  <h4><i class="fas fa-file-alt me1" style="color:var(--g3)"></i>
+    <span th:text="${resultado.id != null ? 'Editar Resultado' : 'Nuevo Resultado'}"></span>
+  </h4>
+</div>
+<div class="form-card" style="max-width:780px">
+  <div class="a-wa mb3">
+    <i class="fas fa-route me1"></i>
+    <strong>Regla TyT → Saber Pro:</strong> Solo se puede registrar Saber Pro para alumnos con TyT <em>aprobada y habilitada para Saber Pro</em> por el coordinador.
+    El periodo debe tener formato <strong>YYYY-1</strong> o <strong>YYYY-2</strong>.
+    Los puntajes deben estar entre <strong>0 y 300</strong>.
+  </div>
+  <form th:action="${resultado.id != null ? '/resultados/actualizar/' + resultado.id : '/resultados/guardar'}"
+        th:object="${resultado}" method="post" id="frmResultado">
+    <input type="hidden" th:field="*{id}"/>
+    <div class="row">
+      <div class="c6 mb3">
+        <label class="fl">Tipo de Examen *</label>
+        <select class="fs" th:field="*{tipoExamen}" required id="selTipo">
+          <option value="">-- Seleccionar --</option>
+          <option th:each="t:${tiposExamen}" th:value="${t}"
+                  th:text="${t.name() == 'TYT' ? 'TyT (Tecnológico)' : 'Saber Pro (Profesional)'}"></option>
+        </select>
+      </div>
+      <div class="c6 mb3">
+        <label class="fl">Estudiante *</label>
+        <select class="fs" th:field="*{alumno.id}" required>
+          <option value="">-- Seleccionar alumno --</option>
+          <option th:each="a:${alumnos}" th:value="${a.id}"
+                  th:text="${a.nombreCompleto + ' (' + a.cedula + ') | TyT:' + (a.aprobadoTyt ? '✔' : '✗') + ' SP:' + (a.aprobadoSaberPro ? '✔' : '✗')}">
+          </option>
+        </select>
+      </div>
+      <div class="c4 mb3">
+        <label class="fl">Periodo <small style="color:var(--muted)">(YYYY-1 o YYYY-2)</small></label>
+        <input type="text" class="fc" th:field="*{periodo}" pattern="\d{4}-[12]" placeholder="2024-1" title="Formato: YYYY-1 o YYYY-2"/>
+      </div>
+      <div class="c4 mb3">
+        <label class="fl">Fecha del Examen</label>
+        <input type="date" class="fc" th:field="*{fechaExamen}"/>
+      </div>
+      <div class="c4 mb3">
+        <label class="fl">Puntaje Global * <small style="color:var(--muted)">(0–300)</small></label>
+        <input type="number" step="0.1" min="0" max="300" class="fc" th:field="*{puntajeGlobal}" required placeholder="0.0"/>
+      </div>
+    </div>
+    <div style="font-size:.8rem;font-weight:700;color:var(--g1);margin:10px 0 8px;text-transform:uppercase">Puntajes por Componente (0–300)</div>
+    <div class="row">
+      <div class="c3 mb3"><label class="fl">Lectura y Escritura</label><input type="number" step="0.1" min="0" max="300" class="fc" th:field="*{lecturaEscritura}" placeholder="0.0"/></div>
+      <div class="c3 mb3"><label class="fl">Razonamiento Cuant.</label><input type="number" step="0.1" min="0" max="300" class="fc" th:field="*{razonamientoCuantitativo}" placeholder="0.0"/></div>
+      <div class="c3 mb3"><label class="fl">Competencias Ciudadanas</label><input type="number" step="0.1" min="0" max="300" class="fc" th:field="*{competenciasCiudadanas}" placeholder="0.0"/></div>
+      <div class="c3 mb3"><label class="fl">Inglés</label><input type="number" step="0.1" min="0" max="300" class="fc" th:field="*{ingles}" placeholder="0.0"/></div>
+      <div class="c3 mb3"><label class="fl">Comp. Específico (solo SP)</label><input type="number" step="0.1" min="0" max="300" class="fc" th:field="*{componenteEspecifico}" id="inpEspecifico" placeholder="0.0"/></div>
+    </div>
+    <div class="df g2 mt3">
+      <button type="submit" class="btn-p"><i class="fas fa-save me1"></i>Guardar Resultado</button>
+      <a th:href="@{/resultados}" class="btn-o">Cancelar</a>
+    </div>
+  </form>
+</div>
+<script>
+// Mostrar/ocultar campo específico según tipo
+document.getElementById('selTipo').addEventListener('change', function() {
+  const esp = document.getElementById('inpEspecifico');
+  if (esp) esp.closest('.c3').style.opacity = (this.value === 'SABER_PRO') ? '1' : '0.5';
+});
+</script>
+</section></body></html>

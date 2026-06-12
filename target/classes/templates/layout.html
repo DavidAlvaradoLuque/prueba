@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:fragment="layout(title,content)">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title th:replace="${title}">UTS</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root{--g1:#1b5e20;--g2:#2e7d32;--g3:#388e3c;--g4:#43a047;--g5:#66bb6a;--gl:#e8f5e9;--gm:#c8e6c9;--white:#ffffff;--bg:#f0f7f0;--text:#1a2e1a;--muted:#5a7a5a;--sidebar-w:248px;--radius:12px;--shadow:0 2px 12px rgba(27,94,32,.10)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh}
+/* SIDEBAR */
+.sidebar{width:var(--sidebar-w);background:linear-gradient(180deg,var(--g1) 0%,var(--g2) 100%);min-height:100vh;position:fixed;top:0;left:0;display:flex;flex-direction:column;z-index:100;box-shadow:3px 0 18px rgba(27,94,32,.25)}
+.sb-brand{padding:18px 16px;border-bottom:1px solid rgba(255,255,255,.12);display:flex;align-items:center;gap:10px}
+.sb-logo{width:40px;height:40px;background:#fff;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--g1);font-size:.95rem;flex-shrink:0;letter-spacing:-.5px}
+.sb-title{color:#fff;font-weight:700;font-size:.92rem;line-height:1.2}
+.sb-sub{font-size:.68rem;color:rgba(255,255,255,.6);font-weight:400}
+.sb-nav{flex:1;padding:10px 0;overflow-y:auto}
+.sb-section{padding:10px 16px 4px;font-size:.62rem;font-weight:700;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.1em}
+.nav-link{display:flex;align-items:center;gap:10px;padding:9px 16px;color:rgba(255,255,255,.78);text-decoration:none;font-size:.82rem;font-weight:500;transition:.15s;border-left:3px solid transparent;border-radius:0}
+.nav-link:hover{background:rgba(255,255,255,.1);color:#fff;border-left-color:rgba(255,255,255,.4)}
+.nav-link.active{background:rgba(255,255,255,.18);color:#fff;border-left-color:#fff;font-weight:700}
+.nav-link i{width:16px;text-align:center;font-size:.83rem;opacity:.85}
+.sb-footer{padding:12px 16px;border-top:1px solid rgba(255,255,255,.12)}
+.sb-footer a{display:flex;align-items:center;gap:8px;color:rgba(255,255,255,.65);text-decoration:none;font-size:.8rem;padding:7px 0;transition:.15s}
+.sb-footer a:hover{color:#fff}
+/* MAIN */
+.main{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;min-height:100vh}
+.topbar{background:#fff;padding:13px 28px;display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid var(--gm);position:sticky;top:0;z-index:50;box-shadow:0 2px 8px rgba(27,94,32,.08)}
+.topbar-title{font-weight:700;font-size:.95rem;color:var(--g1);display:flex;align-items:center;gap:8px}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.badge-rol{padding:4px 14px;border-radius:20px;font-size:.72rem;font-weight:700;display:inline-block}
+.badge-rol.admin{background:var(--g1);color:#fff}
+.badge-rol.coord{background:var(--g3);color:#fff}
+.badge-rol.docente{background:var(--g4);color:#fff}
+.badge-rol.estud{background:var(--gm);color:var(--g1)}
+.content{flex:1;padding:26px}
+/* STAT CARDS */
+.stat-card{border-radius:var(--radius);padding:18px 20px;color:#fff;position:relative;overflow:hidden}
+.stat-card::after{content:'';position:absolute;top:-18px;right:-18px;width:72px;height:72px;border-radius:50%;background:rgba(255,255,255,.1)}
+.stat-num{font-size:2rem;font-weight:800;line-height:1}
+.stat-lbl{font-size:.74rem;opacity:.85;margin-top:3px;font-weight:500}
+.stat-ico{width:40px;height:40px;border-radius:10px;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:1.1rem}
+.c-g1{background:linear-gradient(135deg,var(--g1),var(--g3))}
+.c-g2{background:linear-gradient(135deg,var(--g2),var(--g4))}
+.c-g3{background:linear-gradient(135deg,#2e7d32,#66bb6a)}
+.c-teal{background:linear-gradient(135deg,#00695c,#26a69a)}
+.c-blue{background:linear-gradient(135deg,#1a4b8b,#2980b9)}
+.c-orange{background:linear-gradient(135deg,#e65100,#ef6c00)}
+.c-red{background:linear-gradient(135deg,#b71c1c,#e53935)}
+/* DATA CARD */
+.data-card{border-radius:var(--radius);border:1.5px solid var(--gm);background:#fff;box-shadow:var(--shadow);overflow:hidden}
+.data-card .card-header{background:#fff;border-bottom:1.5px solid var(--gm);padding:13px 18px;font-weight:700;font-size:.86rem;color:var(--g1);display:flex;align-items:center;justify-content:space-between}
+/* FORM CARD */
+.form-card{background:#fff;border-radius:var(--radius);border:1.5px solid var(--gm);padding:26px;box-shadow:var(--shadow)}
+/* TABLE */
+.table{width:100%;border-collapse:collapse;font-size:.82rem}
+.table thead{background:var(--gl)}
+.table th{padding:11px 14px;font-weight:700;color:var(--g1);font-size:.73rem;text-transform:uppercase;letter-spacing:.05em;border-bottom:2px solid var(--gm)}
+.table td{padding:10px 14px;border-bottom:1px solid #eef5ee;vertical-align:middle}
+.table tbody tr:hover{background:#f5fbf5}
+/* BUTTONS */
+.btn-p{background:var(--g1);color:#fff;border:none;padding:9px 18px;border-radius:8px;font-weight:600;font-size:.82rem;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:.15s;font-family:'Outfit',sans-serif}
+.btn-p:hover{background:#154618;color:#fff}
+.btn-o{background:transparent;color:var(--g1);border:1.5px solid var(--g1);padding:7px 14px;border-radius:8px;font-weight:600;font-size:.81rem;text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:.15s;cursor:pointer;font-family:'Outfit',sans-serif}
+.btn-o:hover{background:var(--g1);color:#fff}
+.btn-s{background:#1e6b3c;color:#fff;border:none;padding:7px 14px;border-radius:8px;font-size:.81rem;font-weight:600;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:.15s;font-family:'Outfit',sans-serif}
+.btn-s:hover{background:#155a30;color:#fff}
+.btn-d{background:#b71c1c;color:#fff;border:none;padding:7px 12px;border-radius:8px;font-size:.81rem;font-weight:600;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:.15s;font-family:'Outfit',sans-serif}
+.btn-d:hover{background:#7f1212;color:#fff}
+.btn-w{background:#e65100;color:#fff;border:none;padding:7px 14px;border-radius:8px;font-size:.81rem;font-weight:600;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:.15s;font-family:'Outfit',sans-serif}
+/* BADGES */
+.b-ap{background:#e8f5e9;color:var(--g1);padding:3px 10px;border-radius:20px;font-size:.71rem;font-weight:700;display:inline-block;border:1px solid var(--gm)}
+.b-pe{background:#fff8e1;color:#e65100;padding:3px 10px;border-radius:20px;font-size:.71rem;font-weight:700;display:inline-block;border:1px solid #ffe082}
+.b-bl{background:#ffebee;color:#b71c1c;padding:3px 10px;border-radius:20px;font-size:.71rem;font-weight:700;display:inline-block;border:1px solid #ffcdd2}
+.b-tyt{background:#e8f5e9;color:#1b5e20;padding:3px 10px;border-radius:20px;font-size:.71rem;font-weight:700;display:inline-block;border:1px solid #a5d6a7}
+.b-sp{background:#e3f2fd;color:#1a4b8b;padding:3px 10px;border-radius:20px;font-size:.71rem;font-weight:700;display:inline-block;border:1px solid #90caf9}
+/* ALERTS */
+.a-ok{background:#e8f5e9;border:1px solid #a5d6a7;color:#1b5e20;padding:11px 15px;border-radius:10px;margin-bottom:14px;font-size:.84rem;display:flex;align-items:center;gap:9px}
+.a-er{background:#ffebee;border:1px solid #ffcdd2;color:#b71c1c;padding:11px 15px;border-radius:10px;margin-bottom:14px;font-size:.84rem;display:flex;align-items:center;gap:9px}
+.a-wa{background:#fff8e1;border:1px solid #ffe082;color:#e65100;padding:11px 15px;border-radius:10px;margin-bottom:14px;font-size:.84rem;display:flex;align-items:center;gap:9px}
+/* PAGE HEADER */
+.ph{margin-bottom:20px} .ph h4{font-size:1.2rem;font-weight:800;color:var(--g1);margin-bottom:3px} .ph p{font-size:.82rem;color:var(--muted)}
+/* FORM */
+.fl{font-size:.78rem;font-weight:700;color:var(--g1);margin-bottom:5px;display:block;text-transform:uppercase;letter-spacing:.03em}
+.fc,.fs{border:1.5px solid #c8e6c9;border-radius:8px;padding:9px 12px;font-size:.84rem;font-family:'Outfit',sans-serif;width:100%;transition:.15s;background:#fff;color:var(--text)}
+.fc:focus,.fs:focus{border-color:var(--g1);outline:none;box-shadow:0 0 0 3px rgba(27,94,32,.1)}
+/* LEVEL BADGES */
+.lv-s{background:#1b5e20;color:#fff;padding:3px 12px;border-radius:20px;font-size:.75rem;font-weight:700;display:inline-block}
+.lv-a{background:#1565c0;color:#fff;padding:3px 12px;border-radius:20px;font-size:.75rem;font-weight:700;display:inline-block}
+.lv-m{background:#e65100;color:#fff;padding:3px 12px;border-radius:20px;font-size:.75rem;font-weight:700;display:inline-block}
+.lv-b{background:#b71c1c;color:#fff;padding:3px 12px;border-radius:20px;font-size:.75rem;font-weight:700;display:inline-block}
+/* UTILS */
+.row{display:flex;flex-wrap:wrap;margin:-7px} .row>*{padding:7px}
+.c3{width:33.333%} .c4{width:25%} .c6{width:50%} .c8{width:66.666%} .c12{width:100%}
+@media(max-width:768px){.c3,.c4,.c6,.c8{width:100%}}
+.df{display:flex} .aic{align-items:center} .jcb{justify-content:space-between} .jcc{justify-content:center}
+.fw{flex-wrap:wrap} .g2{gap:8px} .g3{gap:12px} .w100{width:100%}
+.mb2{margin-bottom:8px} .mb3{margin-bottom:14px} .mb4{margin-bottom:20px} .mt3{margin-top:14px} .mt4{margin-top:20px}
+.me1{margin-right:4px} .me2{margin-right:8px}
+.tc{text-align:center} .tm{color:var(--muted)} .fb{font-weight:700}
+.p0{padding:0} .p3{padding:14px}
+</style>
+</head>
+<body>
+<nav class="sidebar">
+  <div class="sb-brand">
+    <div class="sb-logo">UTS</div>
+    <div><div class="sb-title">Saber Pro</div><div class="sb-sub">Sistema de Gestión</div></div>
+  </div>
+  <div class="sb-nav">
+    <!-- ADMIN -->
+    <div th:if="${#strings.equals(rolNombre,'ADMIN')}">
+      <div class="sb-section">Administrador</div>
+      <a th:href="@{/admin/dashboard}" class="nav-link" th:classappend="${currentUri.contains('/admin/dashboard') ? 'active' : ''}"><i class="fas fa-gauge"></i> Dashboard</a>
+      <a th:href="@{/admin/directores}" class="nav-link" th:classappend="${currentUri.contains('/admin/directores') ? 'active' : ''}"><i class="fas fa-user-tie"></i> Directores</a>
+      <a th:href="@{/admin/docentes}" class="nav-link" th:classappend="${currentUri.contains('/admin/docentes') ? 'active' : ''}"><i class="fas fa-chalkboard-teacher"></i> Docentes</a>
+      <a th:href="@{/admin/facultades}" class="nav-link" th:classappend="${currentUri.contains('/admin/facultades') ? 'active' : ''}"><i class="fas fa-building-columns"></i> Facultades</a>
+      <a th:href="@{/resultados}" class="nav-link" th:classappend="${currentUri == '/resultados' ? 'active' : ''}"><i class="fas fa-file-alt"></i> Resultados</a>
+      <a th:href="@{/admin/beneficios}" class="nav-link" th:classappend="${currentUri.contains('/admin/beneficios') ? 'active' : ''}"><i class="fas fa-trophy"></i> Resolución Beneficios</a>
+    </div>
+    <!-- COORDINADOR -->
+    <div th:if="${#strings.equals(rolNombre,'COORDINADOR')}">
+      <div class="sb-section">Coordinación</div>
+      <a th:href="@{/coordinador/dashboard}" class="nav-link" th:classappend="${currentUri.contains('/coordinador/dashboard') ? 'active' : ''}"><i class="fas fa-gauge"></i> Dashboard</a>
+      <a th:href="@{/coordinador/alumnos}" class="nav-link" th:classappend="${currentUri.contains('/coordinador/alumnos') ? 'active' : ''}"><i class="fas fa-users"></i> Gestión Alumnos</a>
+      <a th:href="@{/resultados}" class="nav-link" th:classappend="${currentUri == '/resultados' ? 'active' : ''}"><i class="fas fa-file-alt"></i> Resultados</a>
+      <a th:href="@{/coordinador/informe-total}" class="nav-link" th:classappend="${currentUri.contains('/informe-total') ? 'active' : ''}"><i class="fas fa-list"></i> Informe Total</a>
+      <a th:href="@{/coordinador/informe-unico}" class="nav-link" th:classappend="${currentUri.contains('/informe-unico') ? 'active' : ''}"><i class="fas fa-file-lines"></i> Informe Único</a>
+      <a th:href="@{/coordinador/beneficios}" class="nav-link" th:classappend="${currentUri.contains('/coordinador/beneficios') ? 'active' : ''}"><i class="fas fa-trophy"></i> Resolución Beneficios</a>
+    </div>
+    <!-- DOCENTE -->
+    <div th:if="${#strings.equals(rolNombre,'DOCENTE')}">
+      <div class="sb-section">Docente</div>
+      <a th:href="@{/docente/dashboard}" class="nav-link" th:classappend="${currentUri.contains('/docente/dashboard') ? 'active' : ''}"><i class="fas fa-gauge"></i> Dashboard</a>
+      <a th:href="@{/docente/por-facultad}" class="nav-link" th:classappend="${currentUri.contains('/por-facultad') ? 'active' : ''}"><i class="fas fa-building"></i> Por Facultad</a>
+      <a th:href="@{/docente/por-cedula}" class="nav-link" th:classappend="${currentUri.contains('/por-cedula') ? 'active' : ''}"><i class="fas fa-id-card"></i> Por Cédula</a>
+      <a th:href="@{/docente/informe-total}" class="nav-link" th:classappend="${currentUri.contains('/informe-total') ? 'active' : ''}"><i class="fas fa-list"></i> Informe Total</a>
+      <a th:href="@{/docente/informe-unico}" class="nav-link" th:classappend="${currentUri.contains('/informe-unico') ? 'active' : ''}"><i class="fas fa-file-lines"></i> Informe Único</a>
+      <a th:href="@{/docente/beneficios}" class="nav-link" th:classappend="${currentUri.contains('/docente/beneficios') ? 'active' : ''}"><i class="fas fa-trophy"></i> Resolución Beneficios</a>
+    </div>
+    <!-- ESTUDIANTE -->
+    <div th:if="${#strings.equals(rolNombre,'ESTUDIANTE')}">
+      <div class="sb-section">Estudiante</div>
+      <a th:href="@{/estudiante/dashboard}" class="nav-link" th:classappend="${currentUri.contains('/dashboard') ? 'active' : ''}"><i class="fas fa-user-graduate"></i> Mi Portal</a>
+      <a th:href="@{/estudiante/pago-tyt}" class="nav-link" th:classappend="${currentUri.contains('/pago-tyt') ? 'active' : ''}"><i class="fas fa-file-upload"></i> Cargue Pago TyT</a>
+      <a th:href="@{/estudiante/pago-saberpro}" class="nav-link" th:classappend="${currentUri.contains('/pago-saberpro') ? 'active' : ''}"><i class="fas fa-file-upload"></i> Cargue Pago Saber Pro</a>
+      <a th:href="@{/estudiante/resultado-unico}" class="nav-link" th:classappend="${currentUri.contains('/resultado-unico') ? 'active' : ''}"><i class="fas fa-star"></i> Último Resultado</a>
+      <a th:href="@{/estudiante/resultados-total}" class="nav-link" th:classappend="${currentUri.contains('/resultados-total') ? 'active' : ''}"><i class="fas fa-chart-line"></i> Todos mis Resultados</a>
+      <a th:href="@{/estudiante/beneficios}" class="nav-link" th:classappend="${currentUri.contains('/estudiante/beneficios') ? 'active' : ''}"><i class="fas fa-trophy"></i> Mis Beneficios</a>
+    </div>
+  </div>
+  <div class="sb-footer">
+    <a th:href="@{/logout}"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a>
+  </div>
+</nav>
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-title"><i class="fas fa-leaf me2"></i>UTS — Saber Pro &amp; TyT</div>
+    <div class="topbar-right">
+      <span th:if="${usuario != null}" style="font-size:.82rem;color:var(--muted)" th:text="${usuario.nombre}"></span>
+      <span th:if="${#strings.equals(rolNombre,'ADMIN')}"    class="badge-rol admin">Admin</span>
+      <span th:if="${#strings.equals(rolNombre,'COORDINADOR')}" class="badge-rol coord">Coordinador</span>
+      <span th:if="${#strings.equals(rolNombre,'DOCENTE')}"  class="badge-rol docente">Docente</span>
+      <span th:if="${#strings.equals(rolNombre,'ESTUDIANTE')}" class="badge-rol estud">Estudiante</span>
+    </div>
+  </div>
+  <div class="content">
+    <div th:if="${msg}"   class="a-ok"><i class="fas fa-check-circle"></i><span th:text="${msg}"></span></div>
+    <div th:if="${error}" class="a-er"><i class="fas fa-exclamation-triangle"></i><span th:text="${error}"></span></div>
+    <div th:if="${warning}" class="a-wa"><i class="fas fa-exclamation-circle"></i><span th:text="${warning}"></span></div>
+    <div th:replace="${content}"></div>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title},~{::section})}">
+<head><title>Por Cédula</title></head>
+<body><section>
+<div class="ph"><h4><i class="fas fa-id-card me1" style="color:var(--g3)"></i>Vista Docente — Buscar por Cédula</h4></div>
+<div class="form-card mb3" style="max-width:480px">
+  <form th:action="@{/docente/por-cedula}" method="get" class="df g2">
+    <input type="text" name="cedula" class="fc" placeholder="Número de cédula" th:value="${cedula}" required/>
+    <button type="submit" class="btn-p"><i class="fas fa-search me1"></i>Buscar</button>
+  </form>
+</div>
+<div th:if="${noEncontrado}" class="a-er"><i class="fas fa-times-circle"></i> No se encontró ningún estudiante con esa cédula.</div>
+<div th:if="${alumno != null}">
+  <div class="data-card mb3">
+    <div class="card-header"><i class="fas fa-user me1"></i>Información del Estudiante</div>
+    <div class="p3 row">
+      <div class="c3 mb2"><div style="font-size:.72rem;color:var(--muted);font-weight:700;text-transform:uppercase">Nombre</div><div class="fb" th:text="${alumno.nombreCompleto}"></div></div>
+      <div class="c3 mb2"><div style="font-size:.72rem;color:var(--muted);font-weight:700;text-transform:uppercase">Cédula</div><div th:text="${alumno.cedula}"></div></div>
+      <div class="c3 mb2"><div style="font-size:.72rem;color:var(--muted);font-weight:700;text-transform:uppercase">Facultad</div><div th:text="${alumno.facultad?.nombre ?: '—'}"></div></div>
+      <div class="c3 mb2"><div style="font-size:.72rem;color:var(--muted);font-weight:700;text-transform:uppercase">Semestre</div><div th:text="${alumno.semestre ?: '—'}"></div></div>
+      <div class="c6 mb2"><div style="font-size:.72rem;color:var(--muted);font-weight:700;text-transform:uppercase">Programa TyT</div><div style="font-size:.83rem" th:text="${alumno.programaTyt ?: '—'}"></div></div>
+      <div class="c6 mb2"><div style="font-size:.72rem;color:var(--muted);font-weight:700;text-transform:uppercase">Programa Saber Pro</div><div style="font-size:.83rem" th:text="${alumno.programaSaberPro ?: '—'}"></div></div>
+      <div class="c3 mb2"><div style="font-size:.72rem;color:var(--muted);font-weight:700;text-transform:uppercase">Estado TyT</div>
+        <span th:if="${alumno.aprobadoTyt}" class="b-ap">Aprobado</span>
+        <span th:unless="${alumno.aprobadoTyt}" class="b-pe">Pendiente</span>
+      </div>
+      <div class="c3 mb2"><div style="font-size:.72rem;color:var(--muted);font-weight:700;text-transform:uppercase">Estado Saber Pro</div>
+        <span th:if="${alumno.aprobadoSaberPro}" class="b-ap">Aprobado</span>
+        <span th:if="${!alumno.aprobadoSaberPro and alumno.aprobadoTyt}" class="b-pe">Habilitado</span>
+        <span th:if="${!alumno.aprobadoSaberPro and !alumno.aprobadoTyt}" class="b-bl"><i class="fas fa-lock me1"></i>Bloqueado</span>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="c6"><div class="data-card">
+      <div class="card-header" style="background:var(--gl)"><i class="fas fa-file-alt me1" style="color:var(--g1)"></i>Resultados TyT</div>
+      <div class="p0"><table class="table">
+        <thead><tr><th>Periodo</th><th>Global</th><th>Nivel</th></tr></thead>
+        <tbody>
+          <tr th:each="r:${resultadosTyt}"><td th:text="${r.periodo ?: '—'}"></td><td class="fb" th:text="${r.puntajeGlobal}"></td><td><span th:text="${r.nivel}" th:classappend="${'Superior'.equals(r.nivel)?'lv-s':('Alto'.equals(r.nivel)?'lv-a':'lv-m')}"></span></td></tr>
+          <tr th:if="${#lists.isEmpty(resultadosTyt)}"><td colspan="3" class="tc tm" style="padding:16px">Sin resultados TyT</td></tr>
+        </tbody>
+      </table></div>
+    </div></div>
+    <div class="c6"><div class="data-card">
+      <div class="card-header" style="background:#e3f2fd"><i class="fas fa-star me1" style="color:#1a4b8b"></i>Resultados Saber Pro</div>
+      <div class="p0"><table class="table">
+        <thead><tr><th>Periodo</th><th>Global</th><th>Nivel</th><th>Beneficio</th></tr></thead>
+        <tbody>
+          <tr th:each="r:${resultadosSp}"><td th:text="${r.periodo ?: '—'}"></td><td class="fb" th:text="${r.puntajeGlobal}"></td><td><span th:text="${r.nivel}" th:classappend="${'Superior'.equals(r.nivel)?'lv-s':('Alto'.equals(r.nivel)?'lv-a':'lv-m')}"></span></td><td style="font-size:.73rem" th:text="${r.descripcionBeneficio}"></td></tr>
+          <tr th:if="${#lists.isEmpty(resultadosSp)}"><td colspan="4" class="tc tm" style="padding:16px">Sin resultados Saber Pro</td></tr>
+        </tbody>
+      </table></div>
+    </div></div>
+  </div>
+</div>
+</section></body></html>

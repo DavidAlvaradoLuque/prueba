@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title},~{::section})}">
+<head><title>Resultados</title></head>
+<body><section>
+<div class="ph df jcb aic fw g2 mb3">
+  <div><h4><i class="fas fa-file-alt me1" style="color:var(--g3)"></i>Resultados de Exámenes — TyT &amp; Saber Pro</h4></div>
+  <div class="df g2">
+    <a th:href="@{/resultados/nuevo}" class="btn-p"><i class="fas fa-plus me1"></i>Nuevo Resultado</a>
+  </div>
+</div>
+<div class="data-card">
+  <div class="card-header"><i class="fas fa-list me1"></i>Todos los Resultados</div>
+  <div class="p0"><table class="table">
+    <thead><tr><th>Estudiante</th><th>Cédula</th><th>Tipo</th><th>Periodo</th><th>Global</th><th>Lectura</th><th>Razonamiento</th><th>Ciudadanas</th><th>Inglés</th><th>Nivel</th><th>Acciones</th></tr></thead>
+    <tbody>
+      <tr th:each="r:${resultados}">
+        <td><div class="fb" th:text="${r.alumno?.nombreCompleto}"></div><div style="font-size:.73rem;color:var(--muted)" th:text="${r.alumno?.facultad?.nombre}"></div></td>
+        <td th:text="${r.alumno?.cedula}"></td>
+        <td><span th:if="${'TYT'.equals(r.tipoExamen?.name())}" class="b-tyt">TyT</span><span th:if="${'SABER_PRO'.equals(r.tipoExamen?.name())}" class="b-sp">Saber Pro</span></td>
+        <td th:text="${r.periodo ?: '—'}"></td>
+        <td class="fb" th:text="${r.puntajeGlobal}"></td>
+        <td th:text="${r.lecturaEscritura ?: '—'}"></td>
+        <td th:text="${r.razonamientoCuantitativo ?: '—'}"></td>
+        <td th:text="${r.competenciasCiudadanas ?: '—'}"></td>
+        <td th:text="${r.ingles ?: '—'}"></td>
+        <td><span th:text="${r.nivel}" th:classappend="${'Superior'.equals(r.nivel)?'lv-s':('Alto'.equals(r.nivel)?'lv-a':('Medio'.equals(r.nivel)?'lv-m':'lv-b'))}"></span></td>
+        <td><div class="df g2">
+          <a th:href="@{/resultados/editar/{id}(id=${r.id})}" class="btn-o"><i class="fas fa-edit"></i></a>
+          <a th:href="@{/resultados/eliminar/{id}(id=${r.id})}" class="btn-d" onclick="return confirm('¿Eliminar?')"><i class="fas fa-trash"></i></a>
+        </div></td>
+      </tr>
+      <tr th:if="${#lists.isEmpty(resultados)}"><td colspan="11" class="tc tm" style="padding:24px">Sin resultados</td></tr>
+    </tbody>
+  </table></div>
+</div>
+</section></body></html>

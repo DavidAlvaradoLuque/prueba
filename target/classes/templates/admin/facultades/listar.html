@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title},~{::section})}">
+<head><title>Facultades</title></head>
+<body><section>
+<div class="ph df jcb aic fw g2 mb3">
+  <div><h4><i class="fas fa-building-columns me1" style="color:var(--g3)"></i>Gestión de Facultades</h4><p>Solo 2 facultades UTS — FCSE y FCNI</p></div>
+  <a th:href="@{/admin/facultades/nueva}" class="btn-p"><i class="fas fa-plus me1"></i>Nueva</a>
+</div>
+<div class="data-card">
+  <div class="card-header"><i class="fas fa-list me1"></i>Facultades registradas</div>
+  <div class="p0">
+    <table class="table">
+      <thead><tr><th>Nombre</th><th>Código</th><th>Descripción</th><th>Acciones</th></tr></thead>
+      <tbody>
+        <tr th:each="f : ${facultades}">
+          <td class="fb" th:text="${f.nombre}"></td>
+          <td><span class="b-tyt" th:text="${f.codigo ?: '—'}"></span></td>
+          <td style="font-size:.78rem;max-width:300px" th:text="${f.descripcion ?: '—'}"></td>
+          <td>
+            <div class="df g2">
+              <a th:href="@{/admin/facultades/editar/{id}(id=${f.id})}" class="btn-o"><i class="fas fa-edit"></i></a>
+              <a th:href="@{/admin/facultades/eliminar/{id}(id=${f.id})}" class="btn-d" onclick="return confirm('¿Eliminar facultad?')"><i class="fas fa-trash"></i></a>
+            </div>
+          </td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(facultades)}"><td colspan="4" class="tc tm" style="padding:24px">Sin facultades</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</section></body></html>

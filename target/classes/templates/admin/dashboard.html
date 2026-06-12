@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title},~{::section})}">
+<head><title>Dashboard Admin</title></head>
+<body><section>
+<div class="ph df jcb aic fw g2 mb4">
+  <div><h4><i class="fas fa-gauge me1" style="color:var(--g3)"></i>Dashboard Administrador</h4>
+  <p>Panel de control del sistema — Saber Pro &amp; TyT UTS</p></div>
+</div>
+
+<div class="row mb4">
+  <div class="c4"><div class="stat-card c-g1 df jcb aic"><div><div class="stat-num" th:text="${totalDirectores}">0</div><div class="stat-lbl">Directores</div></div><div class="stat-ico"><i class="fas fa-user-tie"></i></div></div></div>
+  <div class="c4"><div class="stat-card c-g2 df jcb aic"><div><div class="stat-num" th:text="${totalDocentes}">0</div><div class="stat-lbl">Docentes</div></div><div class="stat-ico"><i class="fas fa-chalkboard-teacher"></i></div></div></div>
+  <div class="c4"><div class="stat-card c-teal df jcb aic"><div><div class="stat-num" th:text="${totalFacultades}">0</div><div class="stat-lbl">Facultades</div></div><div class="stat-ico"><i class="fas fa-building-columns"></i></div></div></div>
+  <div class="c4"><div class="stat-card c-g3 df jcb aic"><div><div class="stat-num" th:text="${totalAlumnos}">0</div><div class="stat-lbl">Alumnos Total</div></div><div class="stat-ico"><i class="fas fa-users"></i></div></div></div>
+</div>
+
+<!-- FACULTADES -->
+<div class="row mb4">
+  <div th:each="f : ${facultades}" class="c6">
+    <div class="data-card">
+      <div class="card-header"><i class="fas fa-building-columns me1"></i><span th:text="${f.nombre}"></span></div>
+      <div class="p3">
+        <div style="font-size:.78rem;color:var(--muted);margin-bottom:8px" th:text="${f.descripcion}"></div>
+        <div class="df g2 fw">
+          <a th:href="@{/admin/directores}" class="btn-o"><i class="fas fa-user-tie me1"></i>Directores</a>
+          <a th:href="@{/admin/docentes}" class="btn-o"><i class="fas fa-chalkboard-teacher me1"></i>Docentes</a>
+          <a th:href="@{/resultados/por-facultad(facultadId=${f.id})}" class="btn-o"><i class="fas fa-chart-bar me1"></i>Resultados</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ACCESOS RÁPIDOS -->
+<div class="row">
+  <div class="c6">
+    <div class="data-card">
+      <div class="card-header"><i class="fas fa-bolt me1"></i>Gestión Rápida</div>
+      <div class="p3 row">
+        <div class="c6 mb2"><a th:href="@{/admin/directores/nuevo}" class="btn-p w100"><i class="fas fa-plus me1"></i>Nuevo Director</a></div>
+        <div class="c6 mb2"><a th:href="@{/admin/docentes/nuevo}"   class="btn-p w100"><i class="fas fa-plus me1"></i>Nuevo Docente</a></div>
+        <div class="c6 mb2"><a th:href="@{/admin/facultades/nueva}" class="btn-p w100"><i class="fas fa-plus me1"></i>Nueva Facultad</a></div>
+        <div class="c6 mb2"><a th:href="@{/resultados/nuevo}"       class="btn-p w100"><i class="fas fa-plus me1"></i>Nuevo Resultado</a></div>
+      </div>
+    </div>
+  </div>
+  <div class="c6">
+    <div class="data-card">
+      <div class="card-header"><i class="fas fa-trophy me1"></i>Resolución Beneficios</div>
+      <div class="p3">
+        <p style="font-size:.83rem;color:var(--muted);margin-bottom:12px">Estudiantes con beneficios académicos por puntaje Saber Pro ≥ 160 puntos.</p>
+        <a th:href="@{/admin/beneficios}" class="btn-p"><i class="fas fa-award me1"></i>Ver Resolución Completa</a>
+      </div>
+    </div>
+  </div>
+</div>
+</section></body></html>
